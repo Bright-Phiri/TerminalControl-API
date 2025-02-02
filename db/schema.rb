@@ -10,9 +10,19 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_02_02_170727) do
+ActiveRecord::Schema[8.0].define(version: 2025_02_02_174836) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
+
+  create_table "payments", force: :cascade do |t|
+    t.bigint "taxpayer_id", null: false
+    t.date "period"
+    t.decimal "amount"
+    t.string "payment_method", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["taxpayer_id"], name: "index_payments_on_taxpayer_id"
+  end
 
   create_table "taxpayers", force: :cascade do |t|
     t.string "tin", null: false
@@ -35,5 +45,6 @@ ActiveRecord::Schema[8.0].define(version: 2025_02_02_170727) do
     t.index ["taxpayer_id"], name: "index_terminals_on_taxpayer_id"
   end
 
+  add_foreign_key "payments", "taxpayers"
   add_foreign_key "terminals", "taxpayers"
 end
