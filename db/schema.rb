@@ -10,8 +10,30 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 0) do
+ActiveRecord::Schema[8.0].define(version: 2025_02_02_170727) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
+  create_table "taxpayers", force: :cascade do |t|
+    t.string "tin", null: false
+    t.string "name", null: false
+    t.string "email_address", null: false
+    t.string "phone_number", null: false
+    t.integer "terminals_count"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "terminals", force: :cascade do |t|
+    t.string "terminal_id", null: false
+    t.string "terminal_label", null: false
+    t.string "activation_date", null: false
+    t.integer "status"
+    t.bigint "taxpayer_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["taxpayer_id"], name: "index_terminals_on_taxpayer_id"
+  end
+
+  add_foreign_key "terminals", "taxpayers"
 end

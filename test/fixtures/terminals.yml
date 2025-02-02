@@ -1,0 +1,15 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  terminal_id: MyString
+  terminal_label: MyString
+  activation_date: MyString
+  status: 1
+  taxpayer: one
+
+two:
+  terminal_id: MyString
+  terminal_label: MyString
+  activation_date: MyString
+  status: 1
+  taxpayer: two
