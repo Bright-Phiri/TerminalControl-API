@@ -1,0 +1,13 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  taxpayer: one
+  period: 2025-02-02
+  amount: 9.99
+  payment_method: MyString
+
+two:
+  taxpayer: two
+  period: 2025-02-02
+  amount: 9.99
+  payment_method: MyString
