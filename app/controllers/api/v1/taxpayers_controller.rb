@@ -6,4 +6,10 @@ class API::V1::TaxpayersController < ApplicationController
 
   def create
   end
+
+  def show_terminals
+  end
+
+  def show_payments
+  end
 end
