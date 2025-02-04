@@ -45,6 +45,17 @@ ActiveRecord::Schema[8.0].define(version: 2025_02_02_174836) do
     t.index ["taxpayer_id"], name: "index_terminals_on_taxpayer_id"
   end
 
+  create_table "users", force: :cascade do |t|
+    t.string "first_name"
+    t.string "last_name"
+    t.string "user_name", null: false
+    t.string "email_address", null: false
+    t.string "phone_number"
+    t.string "password_digest"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
   add_foreign_key "payments", "taxpayers"
   add_foreign_key "terminals", "taxpayers"
 end
