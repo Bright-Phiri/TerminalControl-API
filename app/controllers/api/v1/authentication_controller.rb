@@ -28,6 +28,6 @@ class Api::V1::AuthenticationController < ApplicationController
   end
 
   def user_params
-    params.require(:user).permit(:user_name, :password)
+    params.expect(user: [ :user_name, :password ])
   end
 end
