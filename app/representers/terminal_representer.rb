@@ -1,12 +1,11 @@
 # frozen_string_literal: true
 
-class TerminalsRepresenter
-  def initialize(terminals)
-    @terminals = terminals
+class TerminalRepresenter
+  def initialize(terminal)
+    @terminal = terminal
   end
 
   def as_json
-    terminals.map do |terminal|
       {
         id: terminal.id,
         owner: terminal.taxpayer.tin,
@@ -17,10 +16,9 @@ class TerminalsRepresenter
         status: terminal.status,
         posted_on: terminal.created_at
       }
-    end
   end
 
   private
 
-  attr_reader :terminals
+  attr_reader :terminal
 end

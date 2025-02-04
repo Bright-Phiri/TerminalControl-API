@@ -5,26 +5,27 @@ class Api::V1::PaymentsController < ApplicationController
 
   def index
     payments = Payment.paginate(page: params[:page] || 1, per_page: params[:per_page] || 10)
-    render json: { payments:, total: payments.total_entries }
+    render json: { payments: PaymentsRepresenter.new(payments).as_json, total: payments.total_entries }
   end
 
   def create
     taxpayer = Taxpayer.find(params[:taxpayer_id])
     payment = taxpayer.payments.create(payment_params)
+
     if payment.persisted?
-      render json: payment, status: :created
+      render json: PaymentRepresenter.new(payment).as_json, status: :created
     else
       render json: payment.errors.full_messages, status: :unprocessable_entity
     end
   end
 
   def show
-    render json @payment
+    render json: PaymentRepresenter.new(@payment).as_json
   end
 
   def update
     if @payment.update(payment_params)
-      render json: @payment
+      render json: PaymentRepresenter.new(@payment).as_json
     else
       render json: @payment.errors.full_messages, status: :unprocessable_entity
     end

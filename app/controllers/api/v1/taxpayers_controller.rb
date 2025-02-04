@@ -17,6 +17,6 @@ class Api::V1::TaxpayersController < ApplicationController
     taxpayer = Taxpayer.includes(:payments).find(params[:id])
     payments = taxpayer.payments.paginate(page: params[:page] || 1, per_page: params[:per_page] || 10)
 
-    render json: { payments:, total: payments.total_entries }
+    render json: { payments: PaymentsRepresenter.new(payments).as_json, total: payments.total_entries }
   end
 end

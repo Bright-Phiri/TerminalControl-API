@@ -8,7 +8,7 @@ class Api::V1::TerminalsController < ApplicationController
   end
 
   def show
-    render json: @terminal
+    render json: TerminalRepresenter.new(@terminal).as_json
   end
 
   private

@@ -13,9 +13,10 @@ Rails.application.routes.draw do
           get "show_payments"
           get "show_terminals"
         end
-        resources :payments
+        resources :payments, only: :create
       end
-      resources :terminals, only: :index
+      resources :terminals, only: [ :index, :show ]
+      resources :payments, except: :create
       resources :users do
         post "register", on: :collection
       end
