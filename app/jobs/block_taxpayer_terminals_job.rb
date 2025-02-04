@@ -9,8 +9,6 @@ class BlockTaxpayerTerminalsJob < ApplicationJob
     Taxpayer.joins(:terminals).where(terminals: { status: :active }).distinct.find_each do |taxpayer|
       unless taxpayer.payments.where(period: last_month).exists?
         taxpayer.terminals.active_status.update_all(status: :blocked)
-
-        Rails.logger.info "Blocked terminals for taxpayer #{taxpayer.tin} due to missing payment"
       end
     end
   end
