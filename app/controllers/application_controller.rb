@@ -2,6 +2,7 @@
 
 class ApplicationController < ActionController::API
   include ExceptionHandler
+  before_action :authorize_request
 
   private
 
@@ -28,6 +29,21 @@ class ApplicationController < ActionController::API
 
       render_unauthorized "Unauthorized: Invalid or expired token" unless logged_in?
     end
+  end
+
+  def authenticate!
+    api_key = request.headers["X-API-KEY"]
+    if api_key.blank?
+      render_unauthorized "API key is missing"
+    else
+      unless valid_api_key?(api_key)
+        render_unauthorized "Unauthorized"
+      end
+    end
+  end
+
+  def valid_api_key?(api_key)
+    api_key == Rails.application.credentials.api_key
   end
 
   def auth_header
