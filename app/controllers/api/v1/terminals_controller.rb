@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class API::V1::TerminalsController < ApplicationController
+class Api::V1::TerminalsController < ApplicationController
   before_action :set_terminal, only: %i[show]
   def index
     terminals = Terminal.all

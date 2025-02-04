@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class API::V1::PaymentsController < ApplicationController
+class Api::V1::PaymentsController < ApplicationController
   before_action :set_payment, only: %i[show update destroy]
   def index
     payments = Payment.all

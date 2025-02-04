@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class API::V1::TaxpayersController < ApplicationController
+class Api::V1::TaxpayersController < ApplicationController
   before_action :set_taxpayer, only: %i[block_terminals]
   def index
     taxpayers = Taxpayer.all

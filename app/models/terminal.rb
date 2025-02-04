@@ -6,4 +6,5 @@ class Terminal < ApplicationRecord
   belongs_to :taxpayer, counter_cache: true
 
   validates :terminal_id, :terminal_label, :activation_date, presence: true
+  validates :terminal_id, uniqueness: true
 end
