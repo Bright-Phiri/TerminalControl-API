@@ -15,6 +15,10 @@ Rails.application.routes.draw do
         resources :terminals, only: :index
         resources :payments
       end
+      resources :users
+      resources :authentication, only: [] do
+        post "login", on: :collection
+      end
     end
   end
 end
