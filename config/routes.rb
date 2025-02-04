@@ -10,7 +10,6 @@ Rails.application.routes.draw do
       resources :subscriptions, only: :create
       resources :taxpayers, except: [ :create, :update ] do
         member do
-          post "block_terminals"
           get "show_payments"
           get "show_terminals"
         end
