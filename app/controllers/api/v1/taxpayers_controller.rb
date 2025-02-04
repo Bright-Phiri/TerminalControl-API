@@ -10,7 +10,7 @@ class Api::V1::TaxpayersController < ApplicationController
     taxpayer = Taxpayer.find(params[:id])
     terminals = taxpayer.terminals.paginate(page: params[:page] || 1, per_page: params[:per_page] || 10)
 
-    render json: { terminals:, total: terminals.total_entries }
+    render json: { terminals: TerminalsRepresenter.new(terminals).as_json, total: terminals.total_entries }
   end
 
   def show_payments
