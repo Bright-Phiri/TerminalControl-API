@@ -15,7 +15,9 @@ Rails.application.routes.draw do
         resources :terminals, only: :index
         resources :payments
       end
-      resources :users
+      resources :users do
+        post "register", on: :collection
+      end
       resources :authentication, only: [] do
         post "login", on: :collection
       end

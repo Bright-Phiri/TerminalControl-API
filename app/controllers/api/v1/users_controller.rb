@@ -21,6 +21,17 @@ class API::V1::UsersController < ApplicationController
     end
   end
 
+  def register
+    raise ExceptionHandler::UnauthorizedAction if User.exists?
+
+    user = User.new(user_params.merge(role: User::VALID_ROLES[1]))
+    if user.save
+      render json: user, status: :created
+    else
+      render json: user.errors.full_messages, status: :unprocessable_entity
+    end
+  end
+
   def update
     if @user.update(user_params)
       render json: @user
