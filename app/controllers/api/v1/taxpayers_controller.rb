@@ -6,9 +6,6 @@ class API::V1::TaxpayersController < ApplicationController
     render json: taxpayers
   end
 
-  def create
-  end
-
   def show_terminals
     taxpayer = Taxpayer.preload(:terminals).find(params[:id])
     render json: taxpayer.terminals
