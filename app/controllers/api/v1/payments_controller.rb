@@ -8,8 +8,9 @@ class Api::V1::PaymentsController < ApplicationController
   end
 
   def create
-    payment = Payment.new(payment_params)
-    if payment.save
+    taxpayer = Taxpayer.find(params[:taxpayer_id])
+    payment = taxpayer.payments.create(payment_params)
+    if payment.persisted?
       render json: payment, status: :created
     else
       render json: payment.errors.full_messages, status: :unprocessable_entity
