@@ -4,7 +4,7 @@ class Api::V1::PaymentsController < ApplicationController
   before_action :set_payment, only: %i[show update destroy]
 
   def index
-    payments = Payment.paginate(page: params[:page] || 1, per_page: params[:per_page] || 10)
+    payments = Payment.order(:created_at).reverse_order.paginate(page: params[:page] || 1, per_page: params[:per_page] || 10)
     render_ok ({ payments: PaymentsRepresenter.new(payments).as_json, total: payments.total_entries })
   end
 
