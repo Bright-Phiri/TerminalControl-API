@@ -3,6 +3,7 @@
 class Api::V1::SubscriptionsController < ApplicationController
   skip_before_action :authorize_request
   before_action :authenticate!
+
   def create
     subscription_data = subscription_params
     taxpayer = Taxpayer.find_or_initialize_by(tin: subscription_data.dig(:taxpayer, :tin))
