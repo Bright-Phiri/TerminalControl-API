@@ -15,7 +15,9 @@ Rails.application.routes.draw do
         end
         resources :payments, only: :create
       end
-      resources :terminals, only: [ :index, :show ]
+      resources :terminals, only: [ :index, :show ] do
+        post "check_terminal_status", on: :collection
+      end
       resources :payments, except: :create
       resources :users do
         post "register", on: :collection
