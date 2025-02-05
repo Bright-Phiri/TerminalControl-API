@@ -15,6 +15,7 @@ class Api::V1::SubscriptionsController < ApplicationController
     terminal = taxpayer.terminals.build(subscription_data[:terminal])
 
     if terminal.save
+      puts "Zatheka"
       render_created ( { taxpayer: taxpayer, terminal: terminal })
     else
       render_unprocessable_entity "Failed to create subscription", terminal.errors.full_messages
