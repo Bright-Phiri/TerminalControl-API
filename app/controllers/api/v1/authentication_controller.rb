@@ -2,6 +2,7 @@
 
 class Api::V1::AuthenticationController < ApplicationController
   skip_before_action :authorize_request
+  wrap_parameters false
 
   def login
     if User.exists?
@@ -28,6 +29,6 @@ class Api::V1::AuthenticationController < ApplicationController
   end
 
   def user_params
-    params.expect(user: [ :user_name, :password ])
+    params.permit(:user_name, :password)
   end
 end

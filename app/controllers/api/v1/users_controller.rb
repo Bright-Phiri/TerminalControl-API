@@ -3,6 +3,8 @@
 class Api::V1::UsersController < ApplicationController
   before_action :set_user, only: %i[show update destroy]
   skip_before_action :authorize_request, only: :register
+  wrap_parameters false
+
   def index
     users = User.all
     render_ok users
