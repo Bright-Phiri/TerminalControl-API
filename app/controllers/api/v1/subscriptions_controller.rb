@@ -9,15 +9,15 @@ class Api::V1::SubscriptionsController < ApplicationController
     taxpayer = Taxpayer.find_or_initialize_by(tin: subscription_data.dig(:taxpayer, :tin))
 
     if taxpayer.new_record? && !taxpayer.update(subscription_data[:taxpayer])
-      return render json: { errors: taxpayer.errors.full_messages }, status: :unprocessable_entity
+      return render_unprocessable_entity "Failed to create subscription", taxpayer.errors.full_messages
     end
 
     terminal = taxpayer.terminals.build(subscription_data[:terminal])
 
     if terminal.save
-      render json: { taxpayer: taxpayer, terminal: terminal }, status: :created
+      render_created ( { taxpayer: taxpayer, terminal: terminal })
     else
-      render json: { errors: terminal.errors.full_messages }, status: :unprocessable_entity
+      render_unprocessable_entity "Failed to create subscription", terminal.errors.full_messages
     end
   end
 

@@ -2,22 +2,22 @@
 
 class Api::V1::UsersController < ApplicationController
   before_action :set_user, only: %i[show update destroy]
-
+  skip_before_action :authorize_request, only: :register
   def index
     users = User.all
-    render json: users
+    render_ok users
   end
 
   def show
-    render json @user
+    render_ok @user
   end
 
   def create
     user = User.new(user_params)
     if user.save
-      render json: user, status: :created
+      render_created user, "User successfully created"
     else
-      render json: user.errors.full_messages, status: :unprocessable_entity
+      render_unprocessable_entity "Failed to create user", user.errors.full_messages
     end
   end
 
@@ -26,17 +26,17 @@ class Api::V1::UsersController < ApplicationController
 
     user = User.new(user_params.merge(role: User::VALID_ROLES[1]))
     if user.save
-      render json: user, status: :created
+      render_created user, "Account successfully created"
     else
-      render json: user.errors.full_messages, status: :unprocessable_entity
+      render_unprocessable_entity "Failed to register user", user.errors.full_messages
     end
   end
 
   def update
     if @user.update(user_params)
-      render json: @user
+      render_ok @user
     else
-      render json: @user.errors.full_messages, status: :unprocessable_entity
+      render_unprocessable_entity "Failed to update user", @user.errors.full_messages
     end
   end
 
@@ -52,6 +52,6 @@ class Api::V1::UsersController < ApplicationController
   end
 
   def user_params
-    params.expect(user: [ :first_name, :last_name, :user_name, :role, :email_address, :phone_number, :password, :password_confirmation ])
+    params.permit(:first_name, :last_name, :user_name, :role, :email_address, :phone_number, :password, :password_confirmation)
   end
 end

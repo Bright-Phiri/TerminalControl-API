@@ -32,33 +32,27 @@ module ExceptionHandler
 
   included do
     rescue_from ExceptionHandler::NotAuthorized do |exception|
-      render_error(exception.message, :unauthorized)
+      render_unauthorized exception.message
     end
 
     rescue_from ExceptionHandler::UnauthorizedAction do |exception|
-      render json: { message: exception.message }, status: :forbidden
+      render_forbidden exception.message
     end
 
     rescue_from ExceptionHandler::InvalidCredentials do |exception|
-      render_error(exception.message, :bad_request)
+      render_bad_request exception.message
     end
 
     rescue_from ExceptionHandler::InvalidUsername, ExceptionHandler::InvalidEmail do |exception|
-      render_error(exception.message, :not_found)
+      render_not_found exception.message, nil
     end
 
     rescue_from ActiveRecord::RecordNotFound do
-      render_error("Record not found", :not_found)
+      render_not_found "Record not found", nil
     end
 
     rescue_from ActiveRecord::RecordNotSaved, ActiveRecord::RecordInvalid, ActiveRecord::RecordNotDestroyed do |exception|
-      render json: { error: exception.record.errors.full_messages }, status: :unprocessable_entity
+      render_unprocessable_entity "Unprocessable Entity",  exception.record.errors.full_messages
     end
-  end
-
-  private
-
-  def render_error(message, status)
-    render json: { error: message }, status:
   end
 end

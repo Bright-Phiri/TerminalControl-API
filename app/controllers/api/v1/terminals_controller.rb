@@ -5,11 +5,11 @@ class Api::V1::TerminalsController < ApplicationController
 
   def index
     terminals = Terminal.paginate(page: params[:page] || 1, per_page: params[:per_page] || 10)
-    render json: { terminals: TerminalsRepresenter.new(terminals).as_json, total: terminals.total_entries }
+    render_ok({ terminals: TerminalsRepresenter.new(terminals).as_json, total: terminals.total_entries })
   end
 
   def show
-    render json: TerminalRepresenter.new(@terminal).as_json
+    render_ok TerminalRepresenter.new(@terminal).as_json
   end
 
   private
