@@ -8,11 +8,17 @@ class Payment < ApplicationRecord
   validates :period, :payment_method, :amount, presence: true
   validates :payment_method, inclusion: { in: VALID_PAYMENT_METHODS }
   validates :amount, numericality: { greater_than: 0 }
+  validates :transaction_id, presence: true, unless: :cash_payment?
+
   validate :payment_cannot_be_duplicated_for_same_month, :period_must_be_valid_date
 
   after_commit :check_and_unblock_taxpayer_terminals, on: :create
 
   private
+
+  def cash_payment?
+    payment_method == VALID_PAYMENT_METHODS.first
+  end
 
   def payment_cannot_be_duplicated_for_same_month
     return if period.blank?
