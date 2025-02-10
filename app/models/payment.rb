@@ -3,7 +3,7 @@
 class Payment < ApplicationRecord
   VALID_PAYMENT_METHODS = [ "CASH", "TNM MPAMBA", "AIRTEL MONEY", "VISA" ].freeze
 
-  belongs_to :taxpayer
+  belongs_to :subscription
 
   validates :payment_method, :amount, presence: true
   validates :payment_method, inclusion: { in: VALID_PAYMENT_METHODS }
