@@ -9,8 +9,8 @@ class Api::V1::PaymentsController < ApplicationController
   end
 
   def create
-    taxpayer = Taxpayer.find(params[:taxpayer_id])
-    payment = taxpayer.payments.create(payment_params)
+    subscription = Subscription.find(params[:subscription_id])
+    payment = subscription.create_payment(payment_params)
 
     if payment.persisted?
       render_created PaymentRepresenter.new(payment).as_json, "Payment successfully created"
@@ -43,6 +43,6 @@ class Api::V1::PaymentsController < ApplicationController
   end
 
   def payment_params
-    params.expect(payment: [ :period, :amount, :payment_method ])
+    params.expect(payment: [ :payment_date, :amount, :payment_method ])
   end
 end
