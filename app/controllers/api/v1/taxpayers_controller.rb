@@ -9,7 +9,7 @@ class Api::V1::TaxpayersController < ApplicationController
     render_ok ({ taxpayers:, total: taxpayers.total_entries })
   end
 
-  def create
+  def subscribe_taxpayer
     subscription_data = subscription_params
     taxpayer = Taxpayer.find_or_initialize_by(tin: subscription_data.dig(:taxpayer, :tin))
 
