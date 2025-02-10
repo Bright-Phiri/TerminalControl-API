@@ -4,7 +4,7 @@ class BlockTaxpayerTerminalsJob < ApplicationJob
   queue_as :terminal_blocking
 
   def perform
-    Subscription.where("end_date < ?", Time.current).find_each do |subscription|
+    Subscription.where("end_date < ? AND status != ?", Time.current, :expired).find_each do |subscription|
       subscription.expired_status!
       subscription.taxpayer.terminals.active_status.update_all(status: :blocked)
     end
