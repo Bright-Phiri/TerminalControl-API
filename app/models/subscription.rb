@@ -1,0 +1,13 @@
+# frozen_string_literal: true
+
+class Subscription < ApplicationRecord
+  belongs_to :taxpayer
+  has_one :payment, dependent: :destroy
+
+  validates :start_date, :end_date, presence: true
+  validates :end_date, comparison: { greater_than: :start_date }
+
+  def expired?
+    end_date < Date.today
+  end
+end
