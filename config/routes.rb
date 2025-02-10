@@ -7,7 +7,7 @@ Rails.application.routes.draw do
 
   namespace :api do
     namespace :v1 do
-      resources :subscriptions, only: :create
+      resources :subscriptions, except: :create
       resources :taxpayers, except: [ :create, :update ] do
         post "submit_taxpayer_and_terminals_details", on: :collection
         member do
