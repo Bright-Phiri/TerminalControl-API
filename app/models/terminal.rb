@@ -7,6 +7,4 @@ class Terminal < ApplicationRecord
 
   validates :terminal_id, :terminal_label, :activation_date, presence: true
   validates :terminal_id, uniqueness: true
-
-  scope :active, -> { where(status: "active") }
 end
