@@ -10,16 +10,15 @@ Rails.application.routes.draw do
   namespace :api do
     namespace :v1 do
       resources :subscriptions, except: :create
-      resources :taxpayers, except: [ :create, :update ] do
-        post "submit-taxpayer-and-terminals-details", on: :collection
+      resources :taxpayers, except: :update do
         member do
-          get "show-payments"
-          get "show-terminals"
+          get "show_payments"
+          get "show_terminals"
         end
         resources :subscriptions, only: :create
       end
       resources :terminals, only: [ :index, :show ] do
-        post "check-terminal-status", on: :collection
+        post "check_terminal_status", on: :collection
       end
       resources :payments, except: :create
       resources :users do

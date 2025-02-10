@@ -1,15 +1,15 @@
 # frozen_string_literal: true
 
 class Api::V1::TaxpayersController < ApplicationController
-  skip_before_action :authorize_request, only: :submit_taxpayer_and_terminals_details
-  before_action :authenticate!, only: :submit_taxpayer_and_terminals_details
+  skip_before_action :authorize_request, only: :create
+  before_action :authenticate!, only: :create
 
   def index
     taxpayers = Taxpayer.paginate(page: params[:page] || 1, per_page: params[:per_page] || 10)
     render_ok ({ taxpayers:, total: taxpayers.total_entries })
   end
 
-  def submit_taxpayer_and_terminals_details
+  def create
     subscription_data = subscription_params
     taxpayer = Taxpayer.find_or_initialize_by(tin: subscription_data.dig(:taxpayer, :tin))
 
