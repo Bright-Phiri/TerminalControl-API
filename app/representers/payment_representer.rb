@@ -8,9 +8,9 @@ class PaymentRepresenter
   def as_json
     {
       id: payment.id,
-      owner: payment.taxpayer.tin,
-      taxpayer: payment.taxpayer.name,
-      period: payment.period,
+      owner: payment.subscription.taxpayer.tin,
+      taxpayer: payment.subscription.taxpayer.name,
+      payment_date: payment.payment_date,
       amount: payment.amount,
       payment_method: payment.payment_method,
       created_at: payment.created_at
