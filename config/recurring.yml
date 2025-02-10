@@ -2,10 +2,22 @@ development:
   block_unpaid_taxpayer_terminals:
     class: BlockTaxpayerTerminalsJob
     queue: terminal_blocking
-    cron: "0 0 1 * *"  # 12:00 AM on the 1st of every month
+    schedule: at 12:00am on the 1st of every month
+
+  subscription_expiry_check:
+    class: SubscriptionExpiryJob
+    queue: default
+    schedule: "every day at 9:00am"
 
 production:
   block_unpaid_taxpayer_terminals:
     class: BlockTaxpayerTerminalsJob
     queue: terminal_blocking
-    cron: "0 0 1 * *"  # 12:00 AM on the 1st of every month
+    schedule: at 12:00am on the 1st of every month
+
+  subscription_expiry_check:
+    class: SubscriptionExpiryJob
+    queue: default
+    schedule: "every day at 9:00am"
+
+
