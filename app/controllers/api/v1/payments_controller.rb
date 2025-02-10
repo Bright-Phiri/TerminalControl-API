@@ -25,7 +25,7 @@ class Api::V1::PaymentsController < ApplicationController
 
   def update
     if @payment.update(payment_params)
-      render_ok PaymentRepresenter.new(@payment).as_json
+      render_ok PaymentRepresenter.new(@payment).as_json, "Payment successfully updated"
     else
       render_unprocessable_entity "Failed to update payment", @payment.errors.full_messages
     end
