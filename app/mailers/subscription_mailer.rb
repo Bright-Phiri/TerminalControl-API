@@ -5,6 +5,6 @@ class SubscriptionMailer < ApplicationMailer
     @subscription = params[:subscription]
     @taxpayer = subscription.taxpayer
 
-    mail(to: @user.email, subject: "Your subscription is about to expire!")
+    mail(to: @taxpayer.email_address, subject: "Your subscription is about to expire!")
   end
 end
