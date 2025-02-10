@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 class Subscription < ApplicationRecord
+  enum :status, [ :active, :expired ], suffix: true, default: :active
   belongs_to :taxpayer
   has_one :payment, dependent: :destroy
 
