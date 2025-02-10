@@ -4,7 +4,7 @@ class Api::V1::SubscriptionsController < ApplicationController
   skip_before_action :authorize_request
   before_action :authenticate!
 
-  def create
+  def confirm_subscription
     subscription_data = subscription_params
     taxpayer = Taxpayer.find_or_initialize_by(tin: subscription_data.dig(:taxpayer, :tin))
 
@@ -15,7 +15,6 @@ class Api::V1::SubscriptionsController < ApplicationController
     terminal = taxpayer.terminals.build(subscription_data[:terminal])
 
     if terminal.save
-      puts "Zatheka"
       render_created ( { taxpayer: taxpayer, terminal: terminal })
     else
       render_unprocessable_entity "Failed to create subscription", terminal.errors.full_messages
