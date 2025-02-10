@@ -2,12 +2,10 @@ development:
   block_unpaid_taxpayer_terminals:
     class: BlockTaxpayerTerminalsJob
     queue: terminal_blocking
-    schedule: at 12:00am on the 1st of every month
+    cron: "0 0 1 * *"  # 12:00 AM on the 1st of every month
 
 production:
   block_unpaid_taxpayer_terminals:
     class: BlockTaxpayerTerminalsJob
     queue: terminal_blocking
-    schedule: at 12:00am on the 1st of every month
-
-
+    cron: "0 0 1 * *"  # 12:00 AM on the 1st of every month
