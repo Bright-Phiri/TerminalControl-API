@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_02_10_090156) do
+ActiveRecord::Schema[8.0].define(version: 2025_02_10_112803) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -21,6 +21,18 @@ ActiveRecord::Schema[8.0].define(version: 2025_02_10_090156) do
     t.datetime "updated_at", null: false
     t.string "transaction_id"
     t.date "payment_date"
+    t.bigint "subscription_id", null: false
+    t.index ["subscription_id"], name: "index_payments_on_subscription_id"
+  end
+
+  create_table "subscriptions", force: :cascade do |t|
+    t.bigint "taxpayer_id", null: false
+    t.date "start_date"
+    t.date "end_date"
+    t.integer "status"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["taxpayer_id"], name: "index_subscriptions_on_taxpayer_id"
   end
 
   create_table "taxpayers", force: :cascade do |t|
@@ -57,5 +69,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_02_10_090156) do
     t.integer "status"
   end
 
+  add_foreign_key "payments", "subscriptions"
+  add_foreign_key "subscriptions", "taxpayers"
   add_foreign_key "terminals", "taxpayers"
 end
