@@ -250,6 +250,7 @@ GEM
       rubocop-rails
     ruby-progressbar (1.13.0)
     securerandom (0.4.1)
+    shutup (0.1.2)
     solid_cable (3.0.7)
       actioncable (>= 7.2)
       activejob (>= 7.2)
@@ -310,6 +311,7 @@ DEPENDENCIES
   rack-cors
   rails (~> 8.0.1)
   rubocop-rails-omakase
+  shutup (~> 0.1.1)
   solid_cable
   solid_cache
   solid_queue
