@@ -9,7 +9,7 @@ class DashbaordChannel < ApplicationCable::Channel
     stop_all_streams
   end
 
-  on_subscribe do
+  after_subscribe do
     LiveDashboardUpdateJob.perform_later
   end
 end
