@@ -7,4 +7,6 @@ class Terminal < ApplicationRecord
 
   validates :terminal_id, :terminal_label, :activation_date, presence: true
   validates :terminal_id, uniqueness: true
+
+  after_create_commit { LiveDashboardUpdateJob.perform_later }
 end
