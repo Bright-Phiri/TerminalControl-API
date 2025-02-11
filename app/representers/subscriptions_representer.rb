@@ -9,10 +9,10 @@ class SubscriptionsRepresenter
     subscriptions.map do |subscription|
       {
         id: subscription.id,
-        owner: subscriptions.taxpayer.tin,
-        taxpayer: subscriptions.taxpayer.name,
-        start_date: subscriptions.start_date,
-        end_state: subscriptions.end_date
+        owner: subscription.taxpayer.tin,
+        taxpayer: subscription.taxpayer.name,
+        start_date: subscription.start_date,
+        end_state: subscription.end_date
       }
     end
   end

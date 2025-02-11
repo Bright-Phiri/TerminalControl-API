@@ -13,6 +13,7 @@ class PaymentRepresenter
       payment_date: payment.payment_date,
       amount: payment.amount,
       payment_method: payment.payment_method,
+      transaction_id: payment.transaction_id,
       created_at: payment.created_at
     }
   end

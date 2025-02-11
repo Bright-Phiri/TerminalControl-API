@@ -24,6 +24,12 @@ module ExceptionHandler
     end
   end
 
+  class PaymentError < StandardError
+    def initialize(msg = "Payment already added for this subscription")
+      super
+    end
+  end
+
   class InvalidUsername < StandardError
     def initialize(msg = "Username not found")
       super
@@ -39,8 +45,8 @@ module ExceptionHandler
       render_forbidden exception.message
     end
 
-    rescue_from ExceptionHandler::InvalidCredentials do |exception|
-      render_bad_request exception.message
+    rescue_from ExceptionHandler::InvalidCredentials, ExceptionHandler::PaymentError do |exception|
+      render_bad_request exception.message, ""
     end
 
     rescue_from ExceptionHandler::InvalidUsername, ExceptionHandler::InvalidEmail do |exception|

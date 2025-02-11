@@ -8,7 +8,7 @@ class Payment < ApplicationRecord
   validates :payment_method, :amount, presence: true
   validates :payment_method, inclusion: { in: VALID_PAYMENT_METHODS }
   validates :amount, numericality: { greater_than: 0 }
-  validates :transaction_id, presence: true, unless: :cash_payment?
+  validates :transaction_id, presence: { message: "Id is required for this payment method" }, unless: :cash_payment?
 
   private
 
