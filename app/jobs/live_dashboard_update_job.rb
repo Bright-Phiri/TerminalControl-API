@@ -9,7 +9,7 @@ class LiveDashboardUpdateJob < ApplicationJob
       total_subscriptions: Subscription.count,
       active_subscriptions: Subscription.active.count,
       total_terminals: Terminal.count,
-      total_payments: Payment.sum(:amount)
+      total_payments: Payment.sum(:amount) # TODO: Add more payments rep
     }
 
     ActionCable.server.broadcast("dashboard_channel", data)
