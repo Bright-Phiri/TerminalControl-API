@@ -8,4 +8,8 @@ class DashbaordChannel < ApplicationCable::Channel
   def unsubscribed
     stop_all_streams
   end
+
+  on_subscribe do
+    LiveDashboardUpdateJob.perform_later
+  end
 end

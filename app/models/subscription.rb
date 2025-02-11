@@ -8,6 +8,8 @@ class Subscription < ApplicationRecord
   validates :start_date, :end_date, presence: true
   validates :end_date, comparison: { greater_than: :start_date }
 
+  after_commit { LiveDashboardUpdateJob.perform_later }
+
   scope :active, -> { where(status: :active) }
 
   def expired?

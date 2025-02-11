@@ -10,6 +10,8 @@ class Payment < ApplicationRecord
   validates :amount, numericality: { greater_than: 0 }
   validates :transaction_id, presence: { message: "Id is required for this payment method" }, unless: :cash_payment?
 
+  after_commit { LiveDashboardUpdateJob.perform_later }
+
   private
 
   def cash_payment?
