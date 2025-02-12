@@ -34,14 +34,6 @@ class Api::V1::SubscriptionsController < ApplicationController
     end
   end
 
-  def update
-    if @subscription.update(subscription_params)
-      render_ok SubscriptionRepresenter.new(@subscription), "Subscription successfully updated"
-    else
-      render_unprocessable_entity "Failed to update subscription", @subscription.errors.full_messages
-    end
-  end
-
   def destroy
     @subscription.destroy!
     head :no_content
