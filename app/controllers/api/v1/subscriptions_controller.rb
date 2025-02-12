@@ -45,7 +45,7 @@ class Api::V1::SubscriptionsController < ApplicationController
     end
 
     if payment.persisted?
-      render_created SubscriptionRepresenter.new(subscription).as_json, "Subscription successfully renewed"
+      render_ok SubscriptionRepresenter.new(subscription).as_json, "Subscription successfully renewed"
     else
      errors = @subscription.errors.full_messages + payment.errors.full_messages
      render_unprocessable_entity "Failed to create subscription or payment", errors

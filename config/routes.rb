@@ -10,7 +10,7 @@ Rails.application.routes.draw do
   namespace :api do
     namespace :v1 do
       resources :subscriptions, except: :create do
-        resources :payments, only: :create
+        post "renew", on: :collection
       end
       resources :taxpayers, except: [ :create, :update ] do
         post "subscribe_taxpayer", on: :collection
@@ -24,7 +24,7 @@ Rails.application.routes.draw do
       resources :terminals, only: [ :index, :show ] do
         post "check_terminal_status", on: :collection
       end
-      resources :payments, only: :show
+      resources :payments, only: [ :index, :show ]
       resources :users do
         post "register", on: :collection
       end
