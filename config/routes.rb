@@ -11,6 +11,7 @@ Rails.application.routes.draw do
     namespace :v1 do
       resources :subscriptions, except: :create do
         post "renew", on: :collection
+        get "show_payments", on: :member
       end
       resources :taxpayers, except: [ :create, :update ] do
         post "subscribe_taxpayer", on: :collection
