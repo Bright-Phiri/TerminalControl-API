@@ -54,7 +54,7 @@ class Api::V1::SubscriptionsController < ApplicationController
 
   def show_payments
     subscription = Subscription.find(params[:id])
-    payments = subscription.payments.paginate(page: params[:page] || 1, per_page: params[:per_page] || 10)
+    payments = subscription.payments.order(:created_at).reverse_order.paginate(page: params[:page] || 1, per_page: params[:per_page] || 10)
 
     render_ok ({ payments: PaymentsRepresenter.new(payments).as_json, total: payments.total_entries })
   end
