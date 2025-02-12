@@ -10,9 +10,8 @@ class Api::V1::PaymentsController < ApplicationController
 
   def create
     subscription = Subscription.find(params[:subscription_id])
-    raise ExceptionHandler::PaymentError unless subscription.payment.nil?
 
-    payment = subscription.create_payment(payment_params)
+    payment = subscription.payments.create(payment_params)
     if payment.persisted?
       render_created PaymentRepresenter.new(payment).as_json, "Payment successfully created"
     else

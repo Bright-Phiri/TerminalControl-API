@@ -14,7 +14,7 @@ class Api::V1::SubscriptionsController < ApplicationController
 
   def create
     taxpayer = Taxpayer.find(params[:taxpayer_id])
-    subscription = taxpayer.subscriptions.create(subscription_params)
+    subscription = taxpayer.create_subscription(subscription_params)
     if subscription.persisted?
        render_created SubscriptionRepresenter.new(subscription).as_json, "Subscription successfully created"
     else

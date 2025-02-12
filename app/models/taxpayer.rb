@@ -3,7 +3,7 @@
 class Taxpayer < ApplicationRecord
   with_options dependent: :delete_all do |assoc|
     assoc.has_many :terminals
-    assoc.has_many :subscriptions
+    assoc.has_one :subscription
   end
 
   with_options presence: true do
