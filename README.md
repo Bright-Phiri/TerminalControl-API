@@ -1,24 +1,12 @@
 # README
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
+Terminal Subscription & Access Control API
 
-Things you may want to cover:
+Terminal Subscription & Access Control API is designed to manage terminal subscriptions, payments, and access control for businesses using our Point of Sale (POS) system to integrate with the Malawi Revenue Authority (MRA) Electronic Invoicing System (EIS) to transmitt sales data.
 
-* Ruby version
+Key Features:
 
-* System dependencies
+    Terminal Subscription Management – Businesses can activate, renew, or update their terminal subscriptions.
+    Payment Processing – Handles subscription payments for terminal access.
+    Access Control & Compliance – Blocks terminals that have not subscribed or have expired subscriptions, preventing them from transmitting data to MRA.
 
-* Configuration
-
-* Database creation
-
-* Database initialization
-
-* How to run the test suite
-
-* Services (job queues, cache servers, search engines, etc.)
-
-* Deployment instructions
-
-* ...
