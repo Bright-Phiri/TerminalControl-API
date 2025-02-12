@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class Api::V1::SubscriptionsController < ApplicationController
-  before_action :set_subscription, only: %i[show update destroy]
+  before_action :set_subscription, only: %i[show renew_subscription destroy]
 
   def index
     subscriptions = Subscription.paginate(page: params[:page] || 1, per_page: params[:per_page] || 10)
@@ -31,6 +31,24 @@ class Api::V1::SubscriptionsController < ApplicationController
     else
       errors = subscription.errors.full_messages + payment.errors.full_messages
       render_unprocessable_entity "Failed to create subscription or payment", errors
+    end
+  end
+
+  def renew
+    months = params[:months].to_i
+    new_end_date = @subscription.end_date + months.months
+
+    payment = subscription.payments.build(subscription_params[:payment])
+    ActiveRecord::Base.transaction do
+      @subscription.update!(subscription_params[:subscription].merge(end_date: new_end_date))
+      payment.save!
+    end
+
+    if payment.persisted?
+      render_created SubscriptionRepresenter.new(subscription).as_json, "Subscription successfully renewed"
+    else
+     errors = @subscription.errors.full_messages + payment.errors.full_messages
+     render_unprocessable_entity "Failed to create subscription or payment", errors
     end
   end
 
