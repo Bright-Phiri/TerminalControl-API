@@ -40,17 +40,16 @@ class Api::V1::TaxpayersController < ApplicationController
 
   def show_payments
     taxpayer = Taxpayer.find(params[:id])
-    payments = Payment.joins(subscription: :taxpayer).where(subscriptions: { taxpayer_id: taxpayer.id }).order(created_at: :desc)
+    payments = Payment.joins(subscription: :taxpayer).where(subscription: { taxpayer_id: taxpayer.id }).order(created_at: :desc)
     .paginate(page: params[:page] || 1, per_page: params[:per_page] || 10)
 
     render_ok ({ payments: PaymentsRepresenter.new(payments).as_json, total: payments.total_entries })
   end
 
-  def show_subscriptions
+  def show_subscription
     taxpayer = Taxpayer.find(params[:id])
-    subscriptions = taxpayer.subscriptions.paginate(page: params[:page] || 1, per_page: params[:per_page] || 10)
-
-    render_ok ({ subscriptions: SubscriptionsRepresenter.new(subscriptions).as_json, total: subscriptions.total_entries })
+    subscription = taxpayer.subscription
+    render_ok SubscriptionRepresenter.new(subscription).as_json
   end
 
   private
