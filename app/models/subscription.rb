@@ -5,8 +5,8 @@ class Subscription < ApplicationRecord
   belongs_to :taxpayer
   has_many :payments, dependent: :destroy
 
-  validates :start_date, :end_date, presence: true
-  validates :end_date, comparison: { greater_than: :start_date }
+  validates :start_date, presence: true
+  validate :valid_subscription_duration
 
   after_commit { LiveDashboardUpdateJob.perform_later }
 
@@ -16,9 +16,11 @@ class Subscription < ApplicationRecord
     end_date < Date.today
   end
 
-  def renew(months)
-    self.end_date = (expired? ? Date.today : end_date) + months.months
-    self.status = :active
-    save!
+  private
+
+  def valid_subscription_duration
+    if (end_date - start_date).to_i < 28 || (end_date - start_date).to_i > 365
+      errors.add(:end_date, "Subscription duration must be between 1 and 12 months")
+    end
   end
 end

@@ -24,7 +24,7 @@ module ExceptionHandler
     end
   end
 
-  class PaymentError < StandardError
+  class SubscriptionError < StandardError
     def initialize(msg = "Payment already added for this subscription")
       super
     end
