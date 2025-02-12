@@ -41,6 +41,7 @@ class Api::V1::SubscriptionsController < ApplicationController
     payment = subscription.payments.build(subscription_params[:payment])
     ActiveRecord::Base.transaction do
       @subscription.update!(subscription_params[:subscription].merge(end_date: new_end_date))
+      @subscription.active_status!
       payment.save!
     end
 
