@@ -25,7 +25,7 @@ module ExceptionHandler
   end
 
   class SubscriptionError < StandardError
-    def initialize(msg = "Payment already added for this subscription")
+    def initialize(msg = "Taxpayer already has an active subscription")
       super
     end
   end
