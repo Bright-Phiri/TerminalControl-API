@@ -18,6 +18,6 @@ class User < ApplicationRecord
   end
 
   def is_admin?
-    role == VALID_ROLES[1]
+    role == VALID_ROLES.last
   end
 end
