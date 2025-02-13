@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class Taxpayer < ApplicationRecord
-  with_options dependent: :delete_all do |assoc|
+  with_options dependent: :destroy do |assoc|
     assoc.has_many :terminals
     assoc.has_one :subscription
   end

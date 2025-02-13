@@ -18,7 +18,7 @@ Rails.application.routes.draw do
         member do
           get "show_payments"
           get "show_terminals"
-          get "show_subscriptions"
+          get "show_subscription"
         end
         resources :subscriptions, only: :create
       end

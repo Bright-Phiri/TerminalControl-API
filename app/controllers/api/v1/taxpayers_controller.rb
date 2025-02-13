@@ -40,15 +40,25 @@ class Api::V1::TaxpayersController < ApplicationController
 
   def show_payments
     taxpayer = Taxpayer.find(params[:id])
-    payments = taxpayer.subscription.payments.order(:created_at).reverse_order.paginate(page: params[:page] || 1, per_page: params[:per_page] || 10)
 
-    render_ok ({ payments: PaymentsRepresenter.new(payments).as_json, total: payments.total_entries })
+    if taxpayer.subscription.present?
+      payments = taxpayer.subscription.payments.order(:created_at).reverse_order.paginate(page: params[:page] || 1, per_page: params[:per_page] || 10)
+
+      render_ok({ payments: PaymentsRepresenter.new(payments).as_json, total: payments.total_entries })
+    else
+      render_not_found "Subscription not found for taxpayer", nil
+    end
   end
+
 
   def show_subscription
     taxpayer = Taxpayer.find(params[:id])
     subscription = taxpayer.subscription
-    render_ok SubscriptionRepresenter.new(subscription).as_json
+    if subscription.nil?
+      render_not_found "Subscription not found for taxpayer", nil
+    else
+      render_ok SubscriptionRepresenter.new(subscription).as_json
+    end
   end
 
   private

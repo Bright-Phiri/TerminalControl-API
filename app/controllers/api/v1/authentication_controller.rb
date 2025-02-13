@@ -11,7 +11,7 @@ class Api::V1::AuthenticationController < ApplicationController
 
       authenticate_user(user)
     else
-      render_not_found "No user account found"
+      render_not_found "No user account found", nil
     end
   end
 
