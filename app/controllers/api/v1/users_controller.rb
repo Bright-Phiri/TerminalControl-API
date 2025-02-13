@@ -42,6 +42,18 @@ class Api::V1::UsersController < ApplicationController
     end
   end
 
+  def disable
+    @user.status = 1
+    @user.save(validate: false, touch: false)
+    head :ok
+  end
+
+  def activate
+    @user.status = 0
+    @user.save(validate: false, touch: false)
+    head :ok
+  end
+
   def destroy
     @user.destroy!
     head :no_content

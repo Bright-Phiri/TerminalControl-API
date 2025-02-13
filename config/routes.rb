@@ -28,6 +28,10 @@ Rails.application.routes.draw do
       resources :payments, only: [ :index, :show ]
       resources :users do
         post "register", on: :collection
+        member do
+          patch "disable"
+          patch "activate"
+        end
       end
       resources :authentication, only: [] do
         post "login", on: :collection
