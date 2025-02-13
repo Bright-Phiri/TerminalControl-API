@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class Api::V1::UsersController < ApplicationController
-  before_action :set_user, only: %i[show update destroy]
+  before_action :set_user, only: %i[show update disable activate destroy]
   skip_before_action :authorize_request, only: :register
   wrap_parameters false
 
