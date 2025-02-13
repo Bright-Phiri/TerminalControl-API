@@ -45,7 +45,7 @@ module ExceptionHandler
       render_forbidden exception.message
     end
 
-    rescue_from ExceptionHandler::InvalidCredentials, ExceptionHandler::PaymentError do |exception|
+    rescue_from ExceptionHandler::InvalidCredentials, ExceptionHandler::SubscriptionError do |exception|
       render_bad_request exception.message, ""
     end
 
