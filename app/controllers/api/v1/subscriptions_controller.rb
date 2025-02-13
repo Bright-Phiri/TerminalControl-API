@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class Api::V1::SubscriptionsController < ApplicationController
-  before_action :set_subscription, only: %i[show renew_subscription show_payments destroy]
+  before_action :set_subscription, only: %i[show renew show_payments destroy]
 
   def index
     subscriptions = Subscription.paginate(page: params[:page] || 1, per_page: params[:per_page] || 10)
@@ -16,18 +16,20 @@ class Api::V1::SubscriptionsController < ApplicationController
     taxpayer = Taxpayer.find(params[:taxpayer_id])
     raise ExceptionHandler::SubscriptionError if taxpayer.subscription.present?
 
-    months = params[:months].to_i
-    end_date = start_date + months.months
-    subscription = taxpayer.build_subscription(subscription_params[:subscription].merge(end_date: end_date))
-    payment = subscription.payments.build(subscription_params[:payment])
+    subscription_data, transaction_data = subscription_params
+    months = subscription_data[:months].to_i
+    end_date = subscription_data[:start_date].to_date + months.months
+    sub_params = subscription_data.except(:months)
 
+    subscription = taxpayer.build_subscription(sub_params.merge(end_date: end_date))
+    payment = nil
     ActiveRecord::Base.transaction do
       subscription.save!
-      payment.save!
+      payment = subscription.payments.create!(transaction_data)
     end
 
     if subscription.persisted? && payment.persisted?
-       render_created SubscriptionRepresenter.new(subscription).as_json, "Subscription and payment successfully created"
+      render_created SubscriptionRepresenter.new(subscription).as_json, "Subscription and payment successfully created"
     else
       errors = subscription.errors.full_messages + payment.errors.full_messages
       render_unprocessable_entity "Failed to create subscription or payment", errors
@@ -35,21 +37,24 @@ class Api::V1::SubscriptionsController < ApplicationController
   end
 
   def renew
-    months = params[:months].to_i
+    @subscription = Subscription.find(params[:id])
+    subscription_data, payment_data = subscription_params
+    months = subscription_data[:months].to_i
     new_end_date = @subscription.end_date + months.months
+    payment = @subscription.payments.build(payment_data)
+    sub_params = subscription_data.except(:months)
 
-    payment = subscription.payments.build(subscription_params[:payment])
     ActiveRecord::Base.transaction do
-      @subscription.update!(subscription_params[:subscription].merge(end_date: new_end_date))
+      @subscription.update!(sub_params.merge(end_date: new_end_date))
       @subscription.active_status!
       payment.save!
     end
 
     if payment.persisted?
-      render_ok SubscriptionRepresenter.new(subscription).as_json, "Subscription successfully renewed"
+      render_ok SubscriptionRepresenter.new(@subscription).as_json, "Subscription successfully renewed"
     else
-     errors = @subscription.errors.full_messages + payment.errors.full_messages
-     render_unprocessable_entity "Failed to create subscription or payment", errors
+      errors = @subscription.errors.full_messages + payment.errors.full_messages
+      render_unprocessable_entity "Failed to renew subscription or payment", errors
     end
   end
 
