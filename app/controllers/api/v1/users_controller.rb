@@ -6,7 +6,7 @@ class Api::V1::UsersController < ApplicationController
   wrap_parameters false
 
   def index
-    users = User.all
+    users = User.where.not(role: User::VALID_ROLES.last)
     render_ok users
   end
 
