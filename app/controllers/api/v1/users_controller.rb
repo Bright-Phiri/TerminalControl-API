@@ -36,7 +36,7 @@ class Api::V1::UsersController < ApplicationController
 
   def update
     if @user.update(user_params)
-      render_ok @user
+      render_ok @user, "User successfully updated"
     else
       render_unprocessable_entity "Failed to update user", @user.errors.full_messages
     end

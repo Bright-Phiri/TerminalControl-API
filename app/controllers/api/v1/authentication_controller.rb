@@ -24,7 +24,7 @@ class Api::V1::AuthenticationController < ApplicationController
       token = encode_token({ user_id: user.id, exp: 24.hours.from_now.to_i })
       render_ok({ user:, token: token }, "Access granted")
     else
-      render_locked "User account disabled"
+      render_locked "User account disabled", nil
     end
   end
 
