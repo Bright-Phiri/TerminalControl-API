@@ -15,7 +15,7 @@ class Api::V1::TerminalsController < ApplicationController
   end
 
   def check_terminal_status
-    @terminal = Terminal.find_by! terminal_id: terminal_params[:terminal_id]
+    @terminal = Terminal.find_by! terminal_id: params[:terminal_id]
     blocked = @terminal.active_status? ? false : true
     render_ok ({ blocked: blocked })
   end
@@ -27,6 +27,6 @@ class Api::V1::TerminalsController < ApplicationController
   end
 
   def terminal_params
-    params.expect(terminal: [ :terminal_id ])
+    params.expect([ :terminal_id ])
   end
 end
