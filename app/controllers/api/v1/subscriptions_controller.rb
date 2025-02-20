@@ -48,6 +48,7 @@ class Api::V1::SubscriptionsController < ApplicationController
       @subscription.update!(sub_params.merge(end_date: new_end_date))
       @subscription.active_status!
       payment.save!
+      @subscription.taxpayer.terminals.update_all(status: :active)
     end
 
     if payment.persisted?
