@@ -29,7 +29,7 @@ Rails.application.configure do
   # Store uploaded files on the local file system (see config/storage.yml for options).
   config.active_storage.service = :local
 
-  config.active_job.queue_adapter = :solid_queue
+  config.active_job.queue_adapter = :async
   config.solid_queue.connects_to = { database: { writing: :queue } }
 
   # Don't care if the mailer can't send.
@@ -75,8 +75,8 @@ Rails.application.configure do
   config.action_mailer.smtp_settings = {
     address: "smtp.gmail.com",
     port: 587,
-    user_name: Rails.application.credentials.sys_email,
-    password: Rails.application.credentials.sys_email_sec,
+    user_name: Rails.application.credentials.dig(:smtp, :user_name),
+    password: Rails.application.credentials.dig(:smtp, :password),
     authentication: "plain",
     enable_starttls_auto: true
   }
