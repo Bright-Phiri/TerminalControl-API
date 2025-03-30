@@ -10,5 +10,7 @@ class Taxpayer < ApplicationRecord
     validates :tin, :name, :email_address, :phone_number, uniqueness: true
   end
 
-  after_create_commit { LiveDashboardUpdateJob.perform_later }
+  after_create_commit do
+    LiveDashboardUpdateJob.perform_later
+  end
 end
