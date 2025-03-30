@@ -10,11 +10,14 @@ Rails.application.routes.draw do
         get "show_payments", on: :member
       end
       resources :taxpayers, except: [ :create, :update ] do
-        post "subscribe_taxpayer", on: :collection
         member do
           get "show_payments"
           get "show_terminals"
           get "show_subscription"
+        end
+        collection do
+          post "subscribe_taxpayer"
+          post "login"
         end
         resources :subscriptions, only: :create
       end

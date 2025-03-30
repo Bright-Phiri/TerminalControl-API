@@ -36,6 +36,12 @@ module ExceptionHandler
     end
   end
 
+  class InvalidTIN < StandardError
+    def initialize(msg = "TIN not found")
+      super
+    end
+  end
+
   included do
     rescue_from ExceptionHandler::NotAuthorized do |exception|
       render_unauthorized exception.message
@@ -49,7 +55,7 @@ module ExceptionHandler
       render_bad_request exception.message, ""
     end
 
-    rescue_from ExceptionHandler::InvalidUsername, ExceptionHandler::InvalidEmail do |exception|
+    rescue_from ExceptionHandler::InvalidUsername, ExceptionHandler::InvalidTIN, ExceptionHandler::InvalidEmail do |exception|
       render_not_found exception.message, nil
     end
 

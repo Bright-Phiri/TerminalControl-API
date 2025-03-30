@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class Api::V1::TaxpayersController < ApplicationController
-  skip_before_action :authorize_request, only: :subscribe_taxpayer
+  skip_before_action :authorize_request, only: [ :subscribe_taxpayer, :login ]
   before_action :authenticate!, only: :subscribe_taxpayer
   before_action :set_taxpayer, only: :show
 
@@ -50,6 +50,16 @@ class Api::V1::TaxpayersController < ApplicationController
     end
   end
 
+  def login
+    if Taxpayer.exists?
+      taxpayer = Taxpayer.find_by(tin: taxpayer_params[:tin].to_s)
+      raise ExceptionHandler::InvalidTIN unless taxpayer.present?
+
+      authenticate_taxpayer(taxpayer)
+    else
+      render_not_found "No taxpayer account found", nil
+    end
+  end
 
   def show_subscription
     taxpayer = Taxpayer.find(params[:id])
@@ -63,8 +73,19 @@ class Api::V1::TaxpayersController < ApplicationController
 
   private
 
+  def authenticate_taxpayer(taxpayer)
+    raise ExceptionHandler::InvalidCredentials unless taxpayer.authenticate(taxpayer_params[:password])
+
+    token = encode_token({ tin: taxpayer.tin, exp: 24.hours.from_now.to_i })
+    render_ok({ taxpayer:, token: token, role: "Taxpayer" }, "Access granted")
+  end
+
   def set_taxpayer
     @taxpayer = Taxpayer.find(params[:id])
+  end
+
+  def taxpayer_params
+    params.permit(:tin, :password)
   end
 
   def subscription_params
