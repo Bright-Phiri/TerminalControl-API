@@ -3,8 +3,8 @@
 class SubscriptionMailer < ApplicationMailer
   def subscription_about_to_expire
     @subscription = params[:subscription]
-    taxpayer = subscription.taxpayer
+    @taxpayer = subscription.taxpayer
 
-    mail(to: taxpayer.email_address, subject: "Your subscription is about to expire!")
+    mail(to: @taxpayer.email_address, subject: "Your subscription is about to expire!")
   end
 end
