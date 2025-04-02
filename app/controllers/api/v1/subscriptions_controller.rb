@@ -1,4 +1,4 @@
-# frozen_string_literal: true
+ # frozen_string_literal: true
 
 class Api::V1::SubscriptionsController < ApplicationController
   before_action :set_subscription, only: %i[show renew show_payments destroy]
