@@ -43,7 +43,7 @@ class ApplicationController < ActionController::API
   end
 
   def valid_api_key?(api_key)
-    api_key == Rails.application.credentials.api_key
+    api_key == "UNkSmgfwvsla4Oaaleq3UXUOq9GHnfIAlnKChDakn9etolTAanjNaxj4ODogxRap"
   end
 
   def auth_header
