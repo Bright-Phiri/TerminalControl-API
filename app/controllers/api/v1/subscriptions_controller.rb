@@ -15,24 +15,27 @@ class Api::V1::SubscriptionsController < ApplicationController
   def create
     taxpayer = Taxpayer.find(params[:taxpayer_id])
     raise ExceptionHandler::SubscriptionError if taxpayer.subscription.present?
-
+  
     subscription_data, transaction_data = subscription_params
+  
     months = subscription_data[:months].to_i
-    end_date = subscription_data[:start_date].to_date + months.months
-    sub_params = subscription_data.except(:months)
-
-    subscription = taxpayer.build_subscription(sub_params.merge(end_date: end_date))
+    start_date = transaction_data[:payment_date].to_date
+    end_date = start_date + months.months
+  
+    subscription = taxpayer.build_subscription(start_date: start_date, end_date: end_date)
+  
     payment = nil
+  
     ActiveRecord::Base.transaction do
       subscription.save!
       payment = subscription.payments.create!(transaction_data)
     end
-
+  
     if subscription.persisted? && payment.persisted?
-      render_created SubscriptionRepresenter.new(subscription).as_json, "Subscription and payment successfully created"
+      render_created(SubscriptionRepresenter.new(subscription).as_json, "Subscription and payment successfully created")
     else
       errors = subscription.errors.full_messages + payment.errors.full_messages
-      render_unprocessable_entity "Failed to create subscription or payment", errors
+      render_unprocessable_entity("Failed to create subscription or payment", errors)
     end
   end
 
@@ -78,6 +81,9 @@ class Api::V1::SubscriptionsController < ApplicationController
   end
 
   def subscription_params
-    params.expect(subscription: [ :start_date, :months ], payment: [ :payment_date, :amount, :payment_method, :transaction_id ])
+    subscription = params.require(:subscription).permit(:months)
+    payment = params.require(:payment).permit(:payment_date, :amount, :payment_method, :transaction_id)
+    [subscription, payment]
   end
+  
 end
