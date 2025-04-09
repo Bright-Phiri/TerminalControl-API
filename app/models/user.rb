@@ -5,7 +5,11 @@ class User < ApplicationRecord
 
   VALID_ROLES = [ "Officer", "Admin" ].freeze
 
-  has_secure_password
+  has_secure_password validations: false
+
+  validates :password, presence: true, confirmation: true, on: :create
+  validates :password, confirmation: true, allow_nil: true, on: :update
+
   validates :role, inclusion: { in: VALID_ROLES }
   with_options uniqueness: { case_sensitive: false } do
     validates :user_name, presence: true, format: { without: /\s/, message: "must contain no spaces" }
