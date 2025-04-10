@@ -13,6 +13,9 @@ class Taxpayer < ApplicationRecord
 
   after_initialize :set_default_password, if: :new_record?
   after_create_commit :send_default_password_email, :send_default_password_email
+  scope :search, ->(query) { 
+    where("name ILIKE :query OR tin ILIKE :query OR email_address ILIKE :query OR phone_number ILIKE :query", query: "%#{query}%") if query.present? 
+  }
 
   private
 

@@ -4,7 +4,8 @@ class Api::V1::SubscriptionsController < ApplicationController
   before_action :set_subscription, only: %i[show renew show_payments destroy]
 
   def index
-    subscriptions = Subscription.paginate(page: params[:page] || 1, per_page: params[:per_page] || 10)
+    subscriptions =Subscription.search(params[:search])
+    subscriptions = subscriptions.paginate(page: params[:page] || 1, per_page: params[:per_page] || 10)
     render_ok ({ subscriptions: SubscriptionsRepresenter.new(subscriptions).as_json, total: subscriptions.total_entries })
   end
 

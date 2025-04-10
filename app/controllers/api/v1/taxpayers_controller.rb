@@ -6,7 +6,8 @@ class Api::V1::TaxpayersController < ApplicationController
   before_action :set_taxpayer, only: :show
 
   def index
-    taxpayers = Taxpayer.paginate(page: params[:page] || 1, per_page: params[:per_page] || 10)
+    taxpayers = Taxpayer.search(params[:search])
+    taxpayers = taxpayers.paginate(page: params[:page] || 1, per_page: params[:per_page] || 10)
     render_ok ({ taxpayers:, total: taxpayers.total_entries })
   end
 

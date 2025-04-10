@@ -9,4 +9,8 @@ class Terminal < ApplicationRecord
   validates :terminal_id, uniqueness: true
 
   after_create_commit { LiveDashboardUpdateJob.perform_later }
+
+  scope :search, ->(query) { 
+    joins(:taxpayer).where("terminal_label ILIKE :query OR taxpayers.name ILIKE :query", query: "%#{query}%") if query.present? 
+  }
 end

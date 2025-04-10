@@ -11,6 +11,14 @@ class Subscription < ApplicationRecord
 
   scope :active, -> { where(status: :active) }
 
+  scope :search, ->(query) {
+    if query.present?
+      joins(:taxpayer).where(
+        "CAST(start_date AS VARCHAR) ILIKE :query OR taxpayers.tin ILIKE :query OR taxpayers.name ILIKE :query", query: "%#{query}%"
+      )
+    end
+  }  
+
   def expired?
     end_date < Date.today
   end
