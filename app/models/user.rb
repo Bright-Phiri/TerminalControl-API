@@ -1,13 +1,14 @@
 # frozen_string_literal: true
 
 class User < ApplicationRecord
+  include DefaultCredentials
+
   enum :status, [ :active, :disabled ], suffix: true, default: :active
 
   VALID_ROLES = [ "Officer", "Admin" ].freeze
 
-  has_secure_password validations: false
+  has_secure_password
 
-  validates :password, presence: true, confirmation: true, on: :create
   validates :password, confirmation: true, allow_nil: true, on: :update
 
   validates :role, inclusion: { in: VALID_ROLES }
