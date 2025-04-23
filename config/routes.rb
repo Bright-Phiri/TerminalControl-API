@@ -2,11 +2,12 @@
 
 Rails.application.routes.draw do
   get "up" => "rails/health#show", as: :rails_health_check
+  mount ActionCable.server => '/websocket'
 
   namespace :api do
     namespace :v1 do
       resources :subscriptions, except: :create do
-        post "renew", on: :collection
+        post "renew", on: :member
         get "show_payments", on: :member
       end
       resources :taxpayers, except: [ :create, :update ] do
