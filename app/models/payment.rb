@@ -12,6 +12,11 @@ class Payment < ApplicationRecord
 
   after_commit { LiveDashboardUpdateJob.perform_later }
 
+  scope :daily_revenue, -> { where(created_at: Date.current.all_day) }
+  scope :weekly_revenue, -> { where(created_at: Date.current.beginning_of_week(:sunday)..Date.current.end_of_week(:sunday)) }
+  scope :monthly_revenue, -> { where(created_at: Date.current.beginning_of_month..Date.current.end_of_day) }
+  scope :created_in, ->(year) { where('extract(year from created_at) = ?', year) if year.present? }
+  scope :statistics, -> { created_in(Date.current.year).select(:id, :created_at, 'COUNT(id)').group(:id) }
   scope :search, ->(query) {
     if query.present?
       joins(subscription: :taxpayer).where(
@@ -25,7 +30,6 @@ class Payment < ApplicationRecord
       )
     end
   }  
-
   private
 
   def cash_payment?

@@ -44,12 +44,13 @@ class Api::V1::SubscriptionsController < ApplicationController
     @subscription = Subscription.find(params[:id])
     subscription_data, payment_data = subscription_params
     months = subscription_data[:months].to_i
+    new_start_date = Time.current
     new_end_date = @subscription.end_date + months.months
     payment = @subscription.payments.build(payment_data)
     sub_params = subscription_data.except(:months)
 
     ActiveRecord::Base.transaction do
-      @subscription.update!(sub_params.merge(end_date: new_end_date))
+      @subscription.update!(sub_params.merge(start_date: new_start_date, end_date: new_end_date))
       @subscription.active_status!
       payment.save!
       @subscription.taxpayer.terminals.find_each do |terminal|

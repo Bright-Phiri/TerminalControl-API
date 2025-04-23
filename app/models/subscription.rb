@@ -10,6 +10,8 @@ class Subscription < ApplicationRecord
   after_commit { LiveDashboardUpdateJob.perform_later }
 
   scope :active, -> { where(status: :active) }
+  scope :created_in, ->(year) { where('extract(year from created_at) = ?', year) if year.present? }
+  scope :statistics, -> { created_in(Date.current.year).select(:id, :created_at, 'COUNT(id)').group(:id) }
 
   scope :search, ->(query) {
     if query.present?
