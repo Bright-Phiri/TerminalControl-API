@@ -22,7 +22,6 @@ class Api::V1::SubscriptionsController < ApplicationController
     days = subscription_data[:days].to_i
     start_date = transaction_data[:payment_date].to_date
     end_date = start_date + days.days
-  
     subscription = taxpayer.build_subscription(start_date: start_date, end_date: end_date)
   
     payment = nil
