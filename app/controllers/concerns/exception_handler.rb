@@ -59,8 +59,8 @@ module ExceptionHandler
       render_not_found exception.message, nil
     end
 
-    rescue_from ActiveRecord::RecordNotFound do
-      render_not_found "Record not found", nil
+    rescue_from ActiveRecord::RecordNotFound do |exception|
+      render_not_found exception.message, nil
     end
 
     rescue_from ActiveRecord::RecordNotSaved, ActiveRecord::RecordInvalid, ActiveRecord::RecordNotDestroyed do |exception|

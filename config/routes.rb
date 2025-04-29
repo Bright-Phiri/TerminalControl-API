@@ -36,6 +36,14 @@ Rails.application.routes.draw do
       resources :authentication, only: [] do
         post "login", on: :collection
       end
+      resources :passwords, except: [:index, :create, :show, :update, :destroy] do
+        patch 'update_password', on: :member
+        collection do
+          post 'forgot_password'
+          post 'reset_password'
+          post 'verify_password_reset_token'
+        end
+      end
     end
   end
 end

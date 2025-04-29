@@ -22,7 +22,30 @@ class User < ApplicationRecord
     admin.validates :first_name, :last_name, :phone_number, presence: true, on: :update
   end
 
+  def generate_password_token!
+    self.reset_password_token = generate_token
+    self.reset_password_sent_at = Time.now.utc
+    save!(validate: false, touch: false)
+  end
+
+  def password_token_valid?
+    (reset_password_sent_at + 2.hours) > Time.now.utc
+  end
+
+  def reset_password!(password, password_confirmation)
+    self.reset_password_token = nil
+    self.password = password
+    self.password_confirmation = password_confirmation
+    save!
+  end
+
   def is_admin?
     role == VALID_ROLES.last
+  end
+
+  private
+
+  def generate_token
+    SecureRandom.hex(4)
   end
 end
