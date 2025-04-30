@@ -36,7 +36,7 @@ class User < ApplicationRecord
     self.reset_password_token = nil
     self.password = password
     self.password_confirmation = password_confirmation
-    save!
+    save!(validate: false)
   end
 
   def is_admin?
