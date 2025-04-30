@@ -52,7 +52,7 @@ module ExceptionHandler
     end
 
     rescue_from ExceptionHandler::InvalidCredentials, ExceptionHandler::SubscriptionError do |exception|
-      render_bad_request exception.message
+      render_bad_request exception.message, nil
     end
 
     rescue_from ExceptionHandler::InvalidUsername, ExceptionHandler::InvalidTIN, ExceptionHandler::InvalidEmail do |exception|
