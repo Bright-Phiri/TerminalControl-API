@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 class Terminal < ApplicationRecord
+  include CreatedAtFormatting
   enum :status, [ :active, :blocked ], suffix: true, default: :active
 
   belongs_to :taxpayer, counter_cache: true

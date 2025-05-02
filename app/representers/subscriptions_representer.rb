@@ -13,7 +13,8 @@ class SubscriptionsRepresenter
         taxpayer: subscription.taxpayer.name,
         start_date: subscription.start_date,
         end_date: subscription.end_date,
-        status: subscription.status
+        status: subscription.status,
+        created_at: subscription.formatted_created_at
       }
     end
   end

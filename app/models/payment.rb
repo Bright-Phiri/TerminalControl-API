@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 class Payment < ApplicationRecord
+  include CreatedAtFormatting
+
   VALID_PAYMENT_METHODS = [ "CASH", "TNM MPAMBA", "AIRTEL MONEY", "VISA" ].freeze
 
   belongs_to :subscription
@@ -10,8 +12,6 @@ class Payment < ApplicationRecord
   validates :amount, numericality: { greater_than: 0 }
   validate :payment_date_cannot_be_in_the_future
   validates :transaction_id, presence: { message: "Id is required for this payment method" }, unless: :cash_payment?
-
-  after_commit { LiveDashboardUpdateJob.perform_later }
 
   scope :daily_revenue, -> { where(created_at: Date.current.all_day) }
   scope :weekly_revenue, -> { where(created_at: Date.current.beginning_of_week(:sunday)..Date.current.end_of_week(:sunday)) }

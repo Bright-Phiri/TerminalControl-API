@@ -8,6 +8,7 @@ class User < ApplicationRecord
   VALID_ROLES = [ "Officer", "Admin" ].freeze
 
   has_secure_password
+  has_many :logs, dependent: :destroy
 
   validates :password, confirmation: true, allow_nil: true, on: :update
 

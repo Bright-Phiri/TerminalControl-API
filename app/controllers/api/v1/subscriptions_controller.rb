@@ -32,6 +32,7 @@ class Api::V1::SubscriptionsController < ApplicationController
     end
   
     if subscription.persisted? && payment.persisted?
+      log_subscription_action(subscription, payment, 'create')
       render_created(SubscriptionRepresenter.new(subscription).as_json, "Subscription and payment successfully created")
     else
       errors = subscription.errors.full_messages + payment.errors.full_messages
@@ -58,6 +59,7 @@ class Api::V1::SubscriptionsController < ApplicationController
     end
 
     if payment.persisted?
+      log_subscription_action(@subscription, payment, 'renewed')
       render_ok SubscriptionRepresenter.new(@subscription).as_json, "Subscription successfully renewed"
     else
       errors = @subscription.errors.full_messages + payment.errors.full_messages
@@ -86,5 +88,26 @@ class Api::V1::SubscriptionsController < ApplicationController
     payment = params.require(:payment).permit(:payment_date, :amount, :payment_method, :transaction_id)
     [subscription, payment]
   end
+
+  def log_subscription_action(subscription, payment, action)
+    subscription_action = action == 'renewed' ? 'Renewed' : 'Created'
+    payment_action = action == 'renewed' ? 'Recorded' : 'Created'
+  
+    Log.create!(
+      user_id: logged_in_user.id,
+      action: action,
+      resource_type: subscription.class.name,
+      resource_id: subscription.id,
+      description: "#{subscription_action} a subscription for taxpayer #{subscription.taxpayer.tin} from #{subscription.start_date} to #{subscription.end_date}."
+    )
+  
+    Log.create!(
+      user_id: logged_in_user.id,
+      action: action,
+      resource_type: payment.class.name,
+      resource_id: payment.id,
+      description: "#{payment_action} a payment of MK #{payment.amount}."
+    )
+  end  
   
 end
