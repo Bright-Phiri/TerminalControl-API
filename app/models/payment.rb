@@ -13,6 +13,7 @@ class Payment < ApplicationRecord
   validate :payment_date_cannot_be_in_the_future
   validates :transaction_id, presence: { message: "Id is required for this payment method" }, unless: :cash_payment?
 
+  default_scope { order(:created_at).reverse_order }
   scope :daily_revenue, -> { where(created_at: Date.current.all_day) }
   scope :weekly_revenue, -> { where(created_at: Date.current.beginning_of_week(:sunday)..Date.current.end_of_week(:sunday)) }
   scope :monthly_revenue, -> { where(created_at: Date.current.beginning_of_month..Date.current.end_of_day) }

@@ -2,7 +2,7 @@
 
 class Subscription < ApplicationRecord
   include CreatedAtFormatting
-  
+
   enum :status, [ :active, :expired ], suffix: true, default: :active
   belongs_to :taxpayer
   has_many :payments, dependent: :destroy
@@ -11,6 +11,7 @@ class Subscription < ApplicationRecord
 
   after_commit { LiveDashboardUpdateJob.perform_later }
 
+  default_scope { order(:created_at).reverse_order }
   scope :active, -> { where(status: :active) }
   scope :created_in, ->(year) { where('extract(year from created_at) = ?', year) if year.present? }
   scope :statistics, -> { created_in(Date.current.year).select(:id, :created_at, 'COUNT(id)').group(:id) }
