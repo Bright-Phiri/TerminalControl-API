@@ -8,6 +8,7 @@ class Payment < ApplicationRecord
   validates :payment_method, :amount, presence: true
   validates :payment_method, inclusion: { in: VALID_PAYMENT_METHODS }
   validates :amount, numericality: { greater_than: 0 }
+  validate :payment_date_cannot_be_in_the_future
   validates :transaction_id, presence: { message: "Id is required for this payment method" }, unless: :cash_payment?
 
   after_commit { LiveDashboardUpdateJob.perform_later }
@@ -34,5 +35,9 @@ class Payment < ApplicationRecord
 
   def cash_payment?
     payment_method == VALID_PAYMENT_METHODS.first
+  end
+
+  def payment_date_cannot_be_in_the_future
+    errors.add :payment_date, message: " cannot be in the future" unless payment_date.present? && payment_date <= Date.today
   end
 end

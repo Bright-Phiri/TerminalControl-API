@@ -19,7 +19,7 @@ class Subscription < ApplicationRecord
         "CAST(start_date AS VARCHAR) ILIKE :query OR taxpayers.tin ILIKE :query OR taxpayers.name ILIKE :query", query: "%#{query}%"
       )
     end
-  }  
+  }
 
   def expired?
     end_date < Date.today
