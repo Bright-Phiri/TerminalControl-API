@@ -48,7 +48,7 @@ module ExceptionHandler
     end
 
     rescue_from ExceptionHandler::UnauthorizedAction do |exception|
-      render_forbidden exception.message
+      render_forbidden exception.message, nil
     end
 
     rescue_from ExceptionHandler::InvalidCredentials, ExceptionHandler::SubscriptionError do |exception|
