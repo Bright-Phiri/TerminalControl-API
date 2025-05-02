@@ -7,7 +7,7 @@ development:
   subscription_expiry_check:
     class: SubscriptionExpiryJob
     queue: default
-    schedule: "every day at 9:00am"
+    schedule: "every day at 3:00am"
 
 production:
   block_unpaid_taxpayer_terminals:
@@ -18,6 +18,6 @@ production:
   subscription_expiry_check:
     class: SubscriptionExpiryJob
     queue: default
-    schedule: "every day at 9:00am"
+    schedule: "every day at 3:00am"
 
 
