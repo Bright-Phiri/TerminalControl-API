@@ -10,9 +10,21 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_04_29_070357) do
+ActiveRecord::Schema[8.0].define(version: 2025_05_02_091509) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
+
+  create_table "logs", force: :cascade do |t|
+    t.bigint "user_id", null: false
+    t.string "action"
+    t.string "resource_type"
+    t.bigint "resource_id"
+    t.text "description"
+    t.datetime "performed_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["user_id"], name: "index_logs_on_user_id"
+  end
 
   create_table "payments", force: :cascade do |t|
     t.decimal "amount"
@@ -72,6 +84,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_04_29_070357) do
     t.datetime "reset_password_sent_at"
   end
 
+  add_foreign_key "logs", "users"
   add_foreign_key "payments", "subscriptions"
   add_foreign_key "subscriptions", "taxpayers"
   add_foreign_key "terminals", "taxpayers"

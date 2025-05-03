@@ -43,9 +43,11 @@ class Api::V1::SubscriptionsController < ApplicationController
   def renew
     @subscription = Subscription.find(params[:id])
     subscription_data, payment_data = subscription_params
+    
     days = subscription_data[:days].to_i
-    new_start_date = Time.current
-    new_end_date = @subscription.end_date + days.days
+    new_start_date = [Time.current, @subscription.end_date].max
+    new_end_date = new_start_date + days.days
+
     payment = @subscription.payments.build(payment_data)
     sub_params = subscription_data.except(:days)
 
