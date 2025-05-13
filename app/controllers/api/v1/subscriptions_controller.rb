@@ -14,13 +14,14 @@ class Api::V1::SubscriptionsController < ApplicationController
   end
 
   def create
-    taxpayer = Taxpayer.find(params[:taxpayer_id])
+    taxpayer = Taxpayer.preload(:terminals).find(params[:taxpayer_id])
     raise ExceptionHandler::SubscriptionError if taxpayer.subscription.present?
   
     subscription_data, transaction_data = subscription_params
   
     days = subscription_data[:days].to_i
-    start_date = transaction_data[:payment_date].to_date
+    terminal_activation_date = DateTime.parse(taxpayer.terminals.first.activation_date).to_date
+    start_date = terminal_activation_date
     end_date = start_date + days.days
     subscription = taxpayer.build_subscription(start_date: start_date, end_date: end_date)
   
@@ -43,7 +44,7 @@ class Api::V1::SubscriptionsController < ApplicationController
   def renew
     @subscription = Subscription.find(params[:id])
     subscription_data, payment_data = subscription_params
-    
+
     days = subscription_data[:days].to_i
     new_start_date = [Time.current, @subscription.end_date].max
     new_end_date = new_start_date + days.days
