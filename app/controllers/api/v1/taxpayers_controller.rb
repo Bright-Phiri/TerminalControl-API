@@ -34,7 +34,10 @@ class Api::V1::TaxpayersController < ApplicationController
 
   def show_terminals
     taxpayer = Taxpayer.find(params[:id])
-    terminals = taxpayer.terminals.paginate(page: params[:page] || 1, per_page: params[:per_page] || 10)
+    terminals = taxpayer.terminals
+
+    terminals = terminals.search(params[:search]) if params[:search].present?
+    terminals = terminals.paginate(page: params[:page] || 1, per_page: params[:per_page] || 10)
 
     render_ok ({ terminals: TerminalsRepresenter.new(terminals).as_json, total: terminals.total_entries })
   end

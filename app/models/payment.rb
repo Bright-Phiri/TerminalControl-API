@@ -31,7 +31,7 @@ class Payment < ApplicationRecord
         query: "%#{query}%"
       )
     end
-  }  
+  }
   private
 
   def cash_payment?

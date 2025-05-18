@@ -7,7 +7,7 @@ development:
   subscription_expiry_check:
     class: SubscriptionExpiryJob
     queue: subscription_reminders
-    schedule: "every day at 5:10am"
+    schedule: "every day at 3:00am"
 
 production:
   block_unpaid_taxpayer_terminals:
