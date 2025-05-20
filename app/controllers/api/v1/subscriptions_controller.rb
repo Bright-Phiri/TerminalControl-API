@@ -53,7 +53,7 @@ class Api::V1::SubscriptionsController < ApplicationController
     sub_params = subscription_data.except(:days)
 
     ActiveRecord::Base.transaction do
-      @subscription.update!(sub_params.merge(start_date: new_start_date, end_date: new_end_date))
+      @subscription.update!(sub_params.merge(start_date: new_start_date, end_date: new_end_date, expiry_notice_sent: false))
       @subscription.active_status!
       payment.save!
       @subscription.taxpayer.terminals.find_each do |terminal|

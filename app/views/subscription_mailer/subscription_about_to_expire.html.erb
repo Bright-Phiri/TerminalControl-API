@@ -2,7 +2,7 @@
   <div style="background-color: #ffffff; margin: 50px auto 0 auto; max-width: 600px; padding: 20px; box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1); border-radius: 8px;">
     
     <h1 style="font-size: 24px; color: #333333; text-align: center; font-family: Arial, sans-serif;">
-      Your Subscription Expires in 10 Days
+      Your Subscription Expires in <%= pluralize(@days_left, 'day') %>
     </h1>
 
     <p style="font-size: 16px; color: #333333; font-family: Arial, sans-serif;">
