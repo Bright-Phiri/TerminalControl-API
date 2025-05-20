@@ -2,7 +2,7 @@
 
 Rails.application.routes.draw do
   get "up" => "rails/health#show", as: :rails_health_check
-  mount ActionCable.server => '/websocket'
+  mount ActionCable.server => "/websocket"
 
   namespace :api do
     namespace :v1 do
@@ -37,12 +37,12 @@ Rails.application.routes.draw do
         post "login", on: :collection
       end
       resources :activity_logs, only: :index
-      resources :passwords, except: [:index, :create, :show, :update, :destroy] do
-        patch 'update_password', on: :member
+      resources :passwords, except: [ :index, :create, :show, :update, :destroy ] do
+        patch "update_password", on: :member
         collection do
-          post 'forgot_password'
-          post 'reset_password'
-          post 'verify_password_reset_token'
+          post "forgot_password"
+          post "reset_password"
+          post "verify_password_reset_token"
         end
       end
     end

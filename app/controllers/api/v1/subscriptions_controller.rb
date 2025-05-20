@@ -1,4 +1,4 @@
- # frozen_string_literal: true
+# frozen_string_literal: true
 
 class Api::V1::SubscriptionsController < ApplicationController
   before_action :set_subscription, only: %i[show renew show_payments destroy]
@@ -16,24 +16,24 @@ class Api::V1::SubscriptionsController < ApplicationController
   def create
     taxpayer = Taxpayer.preload(:terminals).find(params[:taxpayer_id])
     raise ExceptionHandler::SubscriptionError if taxpayer.subscription.present?
-  
+
     subscription_data, transaction_data = subscription_params
-  
+
     days = subscription_data[:days].to_i
     terminal_activation_date = DateTime.parse(taxpayer.terminals.first.activation_date).to_date
     start_date = terminal_activation_date
     end_date = start_date + days.days
     subscription = taxpayer.build_subscription(start_date: start_date, end_date: end_date)
-  
+
     payment = nil
-  
+
     ActiveRecord::Base.transaction do
       subscription.save!
       payment = subscription.payments.create!(transaction_data)
     end
-  
+
     if subscription.persisted? && payment.persisted?
-      log_subscription_action(subscription, payment, 'create')
+      log_subscription_action(subscription, payment, "create")
       render_created(SubscriptionRepresenter.new(subscription).as_json, "Subscription and payment successfully created")
     else
       errors = subscription.errors.full_messages + payment.errors.full_messages
@@ -46,7 +46,7 @@ class Api::V1::SubscriptionsController < ApplicationController
     subscription_data, payment_data = subscription_params
 
     days = subscription_data[:days].to_i
-    new_start_date = [Time.current, @subscription.end_date].max
+    new_start_date = [ Time.current, @subscription.end_date ].max
     new_end_date = new_start_date + days.days
 
     payment = @subscription.payments.build(payment_data)
@@ -62,7 +62,7 @@ class Api::V1::SubscriptionsController < ApplicationController
     end
 
     if payment.persisted?
-      log_subscription_action(@subscription, payment, 'renewed')
+      log_subscription_action(@subscription, payment, "renewed")
       render_ok SubscriptionRepresenter.new(@subscription).as_json, "Subscription successfully renewed"
     else
       errors = @subscription.errors.full_messages + payment.errors.full_messages
@@ -89,13 +89,13 @@ class Api::V1::SubscriptionsController < ApplicationController
   def subscription_params
     subscription = params.require(:subscription).permit(:days)
     payment = params.require(:payment).permit(:payment_date, :amount, :payment_method, :transaction_id)
-    [subscription, payment]
+    [ subscription, payment ]
   end
 
   def log_subscription_action(subscription, payment, action)
-    subscription_action = action == 'renewed' ? 'Renewed' : 'Created'
-    payment_action = action == 'renewed' ? 'Recorded' : 'Created'
-  
+    subscription_action = action == "renewed" ? "Renewed" : "Created"
+    payment_action = action == "renewed" ? "Recorded" : "Created"
+
     Log.create!(
       user_id: logged_in_user.id,
       action: action,
@@ -103,7 +103,7 @@ class Api::V1::SubscriptionsController < ApplicationController
       resource_id: subscription.id,
       description: "#{subscription_action} a subscription for taxpayer #{subscription.taxpayer.tin} from #{subscription.start_date} to #{subscription.end_date}."
     )
-  
+
     Log.create!(
       user_id: logged_in_user.id,
       action: action,
@@ -111,6 +111,5 @@ class Api::V1::SubscriptionsController < ApplicationController
       resource_id: payment.id,
       description: "#{payment_action} a payment of MK #{payment.amount}."
     )
-  end  
-  
+  end
 end

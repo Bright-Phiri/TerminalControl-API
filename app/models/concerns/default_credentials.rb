@@ -12,7 +12,7 @@ module DefaultCredentials
     @default_password = SecureRandom.alphanumeric(8)
     self.password ||= @default_password
     self.password_confirmation ||= @default_password
-  end 
+  end
 
   def send_default_password_email
     UserMailer.send_default_password(self, @default_password).deliver_later

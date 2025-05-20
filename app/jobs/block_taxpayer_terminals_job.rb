@@ -8,6 +8,6 @@ class BlockTaxpayerTerminalsJob < ApplicationJob
       subscription.expired_status!
       subscription.taxpayer.terminals.active_status.update_all(status: :blocked)
     end
-    LiveDashboardUpdateJob.perform_later  
+    LiveDashboardUpdateJob.perform_later
   end
 end

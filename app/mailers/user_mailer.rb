@@ -10,6 +10,6 @@ class UserMailer < ApplicationMailer
 
   def send_password_reset
     @user = params[:user]
-    mail(to: email_address_with_name(@user.email_address, "#{@user.first_name} #{@user.last_name}"), subject: 'Reset Your Password – Action Required')
+    mail(to: email_address_with_name(@user.email_address, "#{@user.first_name} #{@user.last_name}"), subject: "Reset Your Password \u2013 Action Required")
   end
 end

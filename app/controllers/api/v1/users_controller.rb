@@ -17,7 +17,6 @@ class Api::V1::UsersController < ApplicationController
   def create
     user = User.new(user_params)
     if user.save
-  
       render_created user, "User successfully created. A default password has been sent to the user's email"
     else
       render_unprocessable_entity "Failed to create user", user.errors.full_messages

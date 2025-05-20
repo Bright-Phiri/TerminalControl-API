@@ -12,7 +12,7 @@ class Terminal < ApplicationRecord
   after_create_commit { LiveDashboardUpdateJob.perform_later }
 
   default_scope { order(:created_at).reverse_order }
-  scope :search, ->(query) { 
-    joins(:taxpayer).where("terminal_label ILIKE :query OR taxpayers.name ILIKE :query", query: "%#{query}%") if query.present? 
+  scope :search, ->(query) {
+    joins(:taxpayer).where("terminal_label ILIKE :query OR taxpayers.name ILIKE :query", query: "%#{query}%") if query.present?
   }
 end

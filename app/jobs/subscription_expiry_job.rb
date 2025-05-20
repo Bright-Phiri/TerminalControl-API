@@ -10,6 +10,7 @@ class SubscriptionExpiryJob < ApplicationJob
     end_date = start_date + EXPIRY_NOTICE_WINDOW
 
     subscriptions = Subscription.where("end_date BETWEEN ? AND ?", start_date, end_date)
+                                .where(expiry_notice_sent: false)
                                 .where.not(status: Subscription.statuses[:expired])
 
     if subscriptions.blank?
@@ -18,8 +19,8 @@ class SubscriptionExpiryJob < ApplicationJob
     end
 
     subscriptions.find_each do |subscription|
-      Rails.logger.info "[SubscriptionExpiryJob] Sending expiry notice for subscription ID #{subscription.id}, ends on #{subscription.end_date}."
-      SubscriptionMailer.with(subscription: subscription).subscription_about_to_expire.deliver_later
+      Rails.logger.info "[SubscriptionExpiryJob] Queuing expiry notice for subscription ID #{subscription.id}, ends on #{subscription.end_date}."
+      SubscriptionExpiryMailerJob.perform_later(subscription.id)
     end
   end
 end
