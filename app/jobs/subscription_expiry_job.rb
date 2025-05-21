@@ -3,8 +3,6 @@
 class SubscriptionExpiryJob < ApplicationJob
   queue_as :default
 
-  EXPIRY_NOTICE_WINDOW = 10.days
-
   def perform
     start_date = Date.current
     end_date = start_date + EXPIRY_NOTICE_WINDOW

@@ -92,15 +92,14 @@ class Api::V1::SubscriptionsController < ApplicationController
   end
 
   def log_subscription_action(subscription, payment, action)
-    subscription_action = action == "renewed" ? "Renewed" : "Created"
-    payment_action = action == "renewed" ? "Recorded" : "Created"
+    actions = SUBSCRIPTION_ACTIONS[action] || { subscription: "Unknown", payment: "Unknown" }
 
     Log.create!(
       user_id: logged_in_user.id,
       action: action,
       resource_type: subscription.class.name,
       resource_id: subscription.id,
-      description: "#{subscription_action} a subscription for taxpayer #{subscription.taxpayer.tin} from #{subscription.start_date} to #{subscription.end_date}."
+      description: "#{actions[:subscription]} a subscription for taxpayer #{subscription.taxpayer.tin} from #{subscription.start_date} to #{subscription.end_date}."
     )
 
     Log.create!(
@@ -108,7 +107,7 @@ class Api::V1::SubscriptionsController < ApplicationController
       action: action,
       resource_type: payment.class.name,
       resource_id: payment.id,
-      description: "#{payment_action} a payment of MK #{payment.amount}."
+      description: "#{actions[:payment]} a payment of MK #{payment.amount}."
     )
   end
 end

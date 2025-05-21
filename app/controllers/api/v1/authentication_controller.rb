@@ -21,7 +21,7 @@ class Api::V1::AuthenticationController < ApplicationController
     raise ExceptionHandler::InvalidCredentials unless user.authenticate(user_params[:password])
 
     if user.active_status?
-      token = encode_token({ user_id: user.id, exp: 24.hours.from_now.to_i })
+      token = encode_token({ user_id: user.id, exp: TOKEN_EXPIRY_DURATION.from_now.to_i })
       render_ok({ user:, token: token, role: user.role }, "Access granted")
     else
       render_locked "User account disabled", nil

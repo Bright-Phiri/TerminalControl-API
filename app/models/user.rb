@@ -28,7 +28,7 @@ class User < ApplicationRecord
   end
 
   def password_token_valid?
-    (reset_password_sent_at + 2.hours) > Time.current
+    (reset_password_sent_at + PASSWORD_TOKEN_VALIDITY) > Time.current
   end
 
   def reset_password!(password, password_confirmation)

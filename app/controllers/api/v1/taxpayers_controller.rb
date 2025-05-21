@@ -80,7 +80,7 @@ class Api::V1::TaxpayersController < ApplicationController
   def authenticate_taxpayer(taxpayer)
     raise ExceptionHandler::InvalidCredentials unless taxpayer.authenticate(taxpayer_params[:password])
 
-    token = encode_token({ tin: taxpayer.tin, exp: 24.hours.from_now.to_i })
+    token = encode_token({ tin: taxpayer.tin, exp: TOKEN_EXPIRY_DURATION.from_now.to_i })
     render_ok({ taxpayer:, token: token, role: "Taxpayer" }, "Access granted")
   end
 
