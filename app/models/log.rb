@@ -1,10 +1,17 @@
 # frozen_string_literal: true
 
 class Log < ApplicationRecord
+  include PgSearch::Model
   include CreatedAtFormatting
+
   belongs_to :user
 
-  scope :search, ->(query) {
-    joins(:user).where("action ILIKE :query OR resource_type ILIKE :query OR description ILIKE :query OR users.user_name ILIKE :query", query: "%#{query}%") if query.present?
-  }
+  pg_search_scope :search,
+    against: [:action, :resource_type, :description],
+    associated_against: {
+      user: :user_name
+    },
+    using: {
+      tsearch: { prefix: true }
+    }
 end

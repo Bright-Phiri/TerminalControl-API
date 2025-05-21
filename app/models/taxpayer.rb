@@ -2,6 +2,7 @@
 
 class Taxpayer < ApplicationRecord
   include DefaultCredentials
+  include PgSearch::Model
 
   with_options dependent: :destroy do |assoc|
     assoc.has_many :terminals
@@ -14,9 +15,11 @@ class Taxpayer < ApplicationRecord
   end
 
   default_scope { order(:created_at).reverse_order }
-  scope :search, ->(query) {
-    where("name ILIKE :query OR tin ILIKE :query OR email_address ILIKE :query OR phone_number ILIKE :query", query: "%#{query}%") if query.present?
-  }
+  pg_search_scope :search,
+    against: [:name, :tin, :email_address, :phone_number],
+    using: {
+    tsearch: { prefix: true }
+    }
 
   private
 

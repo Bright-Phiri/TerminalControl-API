@@ -6,9 +6,9 @@ class Api::V1::TaxpayersController < ApplicationController
   before_action :set_taxpayer, only: :show
 
   def index
-    taxpayers = Taxpayer.search(params[:search])
+    taxpayers = params[:search].present? ? Taxpayer.search(params[:search]) : Taxpayer.all
     taxpayers = taxpayers.paginate(page: params[:page] || 1, per_page: params[:per_page] || 10)
-    render_ok ({ taxpayers:, total: taxpayers.total_entries })
+    render_ok({ taxpayers:, total: taxpayers.total_entries })
   end
 
   def show

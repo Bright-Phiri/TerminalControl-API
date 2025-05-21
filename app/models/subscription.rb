@@ -4,6 +4,7 @@ class Subscription < ApplicationRecord
   include CreatedAtFormatting
 
   enum :status, [ :active, :expired ], suffix: true, default: :active
+
   belongs_to :taxpayer
   has_many :payments, dependent: :destroy
 

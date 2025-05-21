@@ -20,18 +20,18 @@ class Payment < ApplicationRecord
   scope :created_in, ->(year) { where("extract(year from created_at) = ?", year) if year.present? }
   scope :statistics, -> { created_in(Date.current.year).select(:id, :created_at, "COUNT(id)").group(:id) }
   scope :search, ->(query) {
-    if query.present?
-      joins(subscription: :taxpayer).where(
-        "payments.payment_method ILIKE :query
-         OR CAST(payments.payment_date AS VARCHAR) ILIKE :query
-         OR payments.transaction_id ILIKE :query
-         OR CAST(payments.amount AS VARCHAR) ILIKE :query
-         OR taxpayers.tin ILIKE :query
-         OR taxpayers.name ILIKE :query",
-        query: "%#{query}%"
-      )
-    end
+  return all unless query.present?
+
+  joins(subscription: :taxpayer).where(<<~SQL.squish, query: "%#{query}%")
+    payments.payment_method ILIKE :query OR
+    CAST(payments.payment_date AS TEXT) ILIKE :query OR
+    payments.transaction_id ILIKE :query OR
+    CAST(payments.amount AS TEXT) ILIKE :query OR
+    taxpayers.tin ILIKE :query OR
+    taxpayers.name ILIKE :query
+  SQL
   }
+
   private
 
   def cash_payment?
