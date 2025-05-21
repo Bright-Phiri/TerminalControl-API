@@ -2,9 +2,6 @@
 
 class Payment < ApplicationRecord
   include CreatedAtFormatting
-
-  VALID_PAYMENT_METHODS = [ "CASH", "TNM MPAMBA", "AIRTEL MONEY", "VISA" ].freeze
-
   belongs_to :subscription
 
   validates :payment_method, :amount, presence: true

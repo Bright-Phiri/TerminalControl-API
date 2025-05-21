@@ -5,8 +5,6 @@ class User < ApplicationRecord
 
   enum :status, [ :active, :disabled ], suffix: true, default: :active
 
-  VALID_ROLES = [ "Officer", "Admin" ].freeze
-
   has_secure_password
   has_many :logs, dependent: :destroy
 

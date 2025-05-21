@@ -51,16 +51,15 @@ class Api::V1::SubscriptionsController < ApplicationController
 
     payment = @subscription.payments.build(payment_data)
     sub_params = subscription_data.except(:days)
-
     ActiveRecord::Base.transaction do
+      payment.save!
       @subscription.update!(sub_params.merge(start_date: new_start_date, end_date: new_end_date, expiry_notice_sent: false))
       @subscription.active_status!
-      payment.save!
+
       @subscription.taxpayer.terminals.find_each do |terminal|
         terminal.update!(status: :active)
       end
     end
-
     if payment.persisted?
       log_subscription_action(@subscription, payment, "renewed")
       render_ok SubscriptionRepresenter.new(@subscription).as_json, "Subscription successfully renewed"

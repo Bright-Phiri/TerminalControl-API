@@ -6,7 +6,7 @@ class Api::V1::UsersController < ApplicationController
   wrap_parameters false
 
   def index
-    users = User.where.not(role: User::VALID_ROLES.last)
+    users = User.where.not(role: VALID_ROLES.last)
     render_ok users
   end
 
@@ -26,7 +26,7 @@ class Api::V1::UsersController < ApplicationController
   def register
     raise ExceptionHandler::UnauthorizedAction if User.exists?
 
-    user = User.new(user_params.merge(role: User::VALID_ROLES[1]))
+    user = User.new(user_params.merge(role: VALID_ROLES[1]))
     if user.save
       render_created user, "Account successfully created"
     else
