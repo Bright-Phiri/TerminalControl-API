@@ -19,18 +19,10 @@ class Api::V1::SubscriptionsController < ApplicationController
 
     subscription_data, transaction_data = subscription_params
 
-    days = subscription_data[:days].to_i
-    terminal_activation_date = DateTime.parse(taxpayer.terminals.first.activation_date).to_date
-    start_date = terminal_activation_date
-    end_date = start_date + days.days
-    subscription = taxpayer.build_subscription(start_date: start_date, end_date: end_date)
-
-    payment = nil
-
-    ActiveRecord::Base.transaction do
-      subscription.save!
-      payment = subscription.payments.create!(transaction_data)
-    end
+    service = SubscriptionService.new(
+      taxpayer: taxpayer, subscription_data: subscription_data, payment_data: transaction_data
+    )
+    subscription, payment = service.create_subscription
 
     if subscription.persisted? && payment.persisted?
       log_subscription_action(subscription, payment, "create")
@@ -45,21 +37,11 @@ class Api::V1::SubscriptionsController < ApplicationController
     @subscription = Subscription.find(params[:id])
     subscription_data, payment_data = subscription_params
 
-    days = subscription_data[:days].to_i
-    new_start_date = [ Time.current, @subscription.end_date ].max
-    new_end_date = new_start_date + days.days
+    service = SubscriptionService.new(
+      taxpayer: @subscription.taxpayer, subscription_data: subscription_data, payment_data: payment_data
+    )
+    payment = service.renew_subscription(@subscription)
 
-    payment = @subscription.payments.build(payment_data)
-    sub_params = subscription_data.except(:days)
-    ActiveRecord::Base.transaction do
-      payment.save!
-      @subscription.update!(sub_params.merge(start_date: new_start_date, end_date: new_end_date, expiry_notice_sent: false))
-      @subscription.active_status!
-
-      @subscription.taxpayer.terminals.find_each do |terminal|
-        terminal.update!(status: :active)
-      end
-    end
     if payment.persisted?
       log_subscription_action(@subscription, payment, "renewed")
       render_ok SubscriptionRepresenter.new(@subscription).as_json, "Subscription successfully renewed"
