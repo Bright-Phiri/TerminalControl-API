@@ -1,8 +1,6 @@
 default: &default
   adapter: postgresql
   encoding: unicode
-  # For details on connection pooling, see Rails configuration guide
-  # https://guides.rubyonrails.org/configuring.html#database-pooling
   pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
 
 development:
@@ -25,9 +23,7 @@ test:
 production:
   primary: &primary_production
     <<: *default
-    database: terminal_control_api_production
-    username: terminal_control_api
-    password: <%= ENV["TERMINAL_CONTROL_API_DATABASE_PASSWORD"] %>
+    url: <%= ENV["DATABASE_URL"] %>
   queue:
     <<: *primary_production
     database: terminal_control_api_production_queue
@@ -36,3 +32,6 @@ production:
     <<: *primary_production
     database: terminal_control_api_production_cable
     migrations_paths: db/cable_migrate
+  cache:
+    <<: *primary_production
+    database: terminal_control_api_production_cache
