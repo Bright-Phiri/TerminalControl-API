@@ -4,7 +4,8 @@ class Api::V1::SubscriptionsController < ApplicationController
   before_action :set_subscription, only: %i[show renew show_payments destroy]
 
   def index
-    subscriptions = Subscription.paginate(page: params[:page] || 1, per_page: params[:per_page] || 10)
+    subscriptions =Subscription.search(params[:search])
+    subscriptions = subscriptions.paginate(page: params[:page] || 1, per_page: params[:per_page] || 10)
     render_ok ({ subscriptions: SubscriptionsRepresenter.new(subscriptions).as_json, total: subscriptions.total_entries })
   end
 
@@ -13,47 +14,36 @@ class Api::V1::SubscriptionsController < ApplicationController
   end
 
   def create
-    taxpayer = Taxpayer.find(params[:taxpayer_id])
+    taxpayer = Taxpayer.preload(:terminals).find(params[:taxpayer_id])
     raise ExceptionHandler::SubscriptionError if taxpayer.subscription.present?
 
     subscription_data, transaction_data = subscription_params
-    months = subscription_data[:months].to_i
-    end_date = subscription_data[:start_date].to_date + months.months
-    sub_params = subscription_data.except(:months)
 
-    subscription = taxpayer.build_subscription(sub_params.merge(end_date: end_date))
-    payment = nil
-    ActiveRecord::Base.transaction do
-      subscription.save!
-      payment = subscription.payments.create!(transaction_data)
-    end
+    service = SubscriptionService.new(
+      taxpayer: taxpayer, subscription_data: subscription_data, payment_data: transaction_data
+    )
+    subscription, payment = service.create_subscription
 
     if subscription.persisted? && payment.persisted?
-      render_created SubscriptionRepresenter.new(subscription).as_json, "Subscription and payment successfully created"
+      log_subscription_action(subscription, payment, "create")
+      render_created(SubscriptionRepresenter.new(subscription).as_json, "Subscription and payment successfully created")
     else
       errors = subscription.errors.full_messages + payment.errors.full_messages
-      render_unprocessable_entity "Failed to create subscription or payment", errors
+      render_unprocessable_entity("Failed to create subscription or payment", errors)
     end
   end
 
   def renew
     @subscription = Subscription.find(params[:id])
     subscription_data, payment_data = subscription_params
-    months = subscription_data[:months].to_i
-    new_end_date = @subscription.end_date + months.months
-    payment = @subscription.payments.build(payment_data)
-    sub_params = subscription_data.except(:months)
 
-    ActiveRecord::Base.transaction do
-      @subscription.update!(sub_params.merge(end_date: new_end_date))
-      @subscription.active_status!
-      payment.save!
-      @subscription.taxpayer.terminals.find_each do |terminal|
-        terminal.update!(status: :active)
-      end
-    end
+    service = SubscriptionService.new(
+      taxpayer: @subscription.taxpayer, subscription_data: subscription_data, payment_data: payment_data
+    )
+    payment = service.renew_subscription(@subscription)
 
     if payment.persisted?
+      log_subscription_action(@subscription, payment, "renewed")
       render_ok SubscriptionRepresenter.new(@subscription).as_json, "Subscription successfully renewed"
     else
       errors = @subscription.errors.full_messages + payment.errors.full_messages
@@ -78,6 +68,28 @@ class Api::V1::SubscriptionsController < ApplicationController
   end
 
   def subscription_params
-    params.expect(subscription: [ :start_date, :months ], payment: [ :payment_date, :amount, :payment_method, :transaction_id ])
+    subscription = params.require(:subscription).permit(:days)
+    payment = params.require(:payment).permit(:payment_date, :amount, :payment_method, :transaction_id)
+    [ subscription, payment ]
+  end
+
+  def log_subscription_action(subscription, payment, action)
+    actions = SUBSCRIPTION_ACTIONS[action] || { subscription: "Unknown", payment: "Unknown" }
+
+    Log.create!(
+      user_id: logged_in_user.id,
+      action: action,
+      resource_type: subscription.class.name,
+      resource_id: subscription.id,
+      description: "#{actions[:subscription]} a subscription for taxpayer #{subscription.taxpayer.tin} from #{subscription.start_date} to #{subscription.end_date}."
+    )
+
+    Log.create!(
+      user_id: logged_in_user.id,
+      action: action,
+      resource_type: payment.class.name,
+      resource_id: payment.id,
+      description: "#{actions[:payment]} a payment of MK #{payment.amount}."
+    )
   end
 end

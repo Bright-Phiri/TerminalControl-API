@@ -14,8 +14,8 @@ class PaymentsRepresenter
         payment_date: payment.payment_date,
         amount: payment.amount,
         payment_method: payment.payment_method,
-        transaction_id: payment.transaction_id,
-        created_at: payment.created_at
+        transaction_id: payment.transaction_id.presence || "N/A",
+        created_at: payment.formatted_created_at
       }
     end
   end

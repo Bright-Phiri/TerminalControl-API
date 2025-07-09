@@ -2,19 +2,23 @@
 
 Rails.application.routes.draw do
   get "up" => "rails/health#show", as: :rails_health_check
+  mount ActionCable.server => "/websocket"
 
   namespace :api do
     namespace :v1 do
       resources :subscriptions, except: :create do
-        post "renew", on: :collection
+        post "renew", on: :member
         get "show_payments", on: :member
       end
       resources :taxpayers, except: [ :create, :update ] do
-        post "subscribe_taxpayer", on: :collection
         member do
           get "show_payments"
           get "show_terminals"
           get "show_subscription"
+        end
+        collection do
+          post "subscribe_taxpayer"
+          post "login"
         end
         resources :subscriptions, only: :create
       end
@@ -31,6 +35,15 @@ Rails.application.routes.draw do
       end
       resources :authentication, only: [] do
         post "login", on: :collection
+      end
+      resources :activity_logs, only: :index
+      resources :passwords, except: [ :index, :create, :show, :update, :destroy ] do
+        patch "update_password", on: :member
+        collection do
+          post "forgot_password"
+          post "reset_password"
+          post "verify_password_reset_token"
+        end
       end
     end
   end

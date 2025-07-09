@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
-class DashbaordChannel < ApplicationCable::Channel
+class DashboardChannel < ApplicationCable::Channel
   def subscribed
-    stream_from "dashbaord_channel"
+    stream_from "dashboard_channel"
   end
 
   def unsubscribed

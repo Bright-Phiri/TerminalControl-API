@@ -6,7 +6,7 @@ class Api::V1::UsersController < ApplicationController
   wrap_parameters false
 
   def index
-    users = User.where.not(role: User::VALID_ROLES.last)
+    users = User.where.not(role: VALID_ROLES.last)
     render_ok users
   end
 
@@ -17,7 +17,7 @@ class Api::V1::UsersController < ApplicationController
   def create
     user = User.new(user_params)
     if user.save
-      render_created user, "User successfully created"
+      render_created user, "User successfully created. A default password has been sent to the user's email"
     else
       render_unprocessable_entity "Failed to create user", user.errors.full_messages
     end
@@ -26,7 +26,7 @@ class Api::V1::UsersController < ApplicationController
   def register
     raise ExceptionHandler::UnauthorizedAction if User.exists?
 
-    user = User.new(user_params.merge(role: User::VALID_ROLES[1]))
+    user = User.new(user_params.merge(role: VALID_ROLES[1]))
     if user.save
       render_created user, "Account successfully created"
     else

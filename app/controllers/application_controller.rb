@@ -18,7 +18,7 @@ class ApplicationController < ActionController::API
     return unless decoded_token
 
     user_id = decoded_token[0]["user_id"]
-    User.find_by(id: user_id)
+    User.find(user_id)
   end
 
   def authorize_request
@@ -26,7 +26,6 @@ class ApplicationController < ActionController::API
       render_unauthorized "Token missing"
     else
       render_unauthorized "Invalid token format" and return unless auth_header.starts_with?("Bearer ")
-
       render_unauthorized "Unauthorized: Invalid or expired token" unless logged_in?
     end
   end

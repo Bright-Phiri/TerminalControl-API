@@ -14,7 +14,7 @@ class TerminalRepresenter
         terminal_label: terminal.terminal_label,
         activation_date: terminal.activation_date,
         status: terminal.status,
-        posted_on: terminal.created_at
+        posted_on: terminal.formatted_created_at
       }
   end
 

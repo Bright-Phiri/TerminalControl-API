@@ -6,7 +6,8 @@ class Api::V1::TerminalsController < ApplicationController
   before_action :authenticate!, only: :check_terminal_status
 
   def index
-    terminals = Terminal.paginate(page: params[:page] || 1, per_page: params[:per_page] || 10)
+    terminals = params[:search].present? ? Terminal.search(params[:search]) : Terminal.all
+    terminals = terminals.paginate(page: params[:page] || 1, per_page: params[:per_page] || 10)
     render_ok({ terminals: TerminalsRepresenter.new(terminals).as_json, total: terminals.total_entries })
   end
 

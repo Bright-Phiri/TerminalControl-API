@@ -36,25 +36,31 @@ module ExceptionHandler
     end
   end
 
+  class InvalidTIN < StandardError
+    def initialize(msg = "TIN not found")
+      super
+    end
+  end
+
   included do
     rescue_from ExceptionHandler::NotAuthorized do |exception|
       render_unauthorized exception.message
     end
 
     rescue_from ExceptionHandler::UnauthorizedAction do |exception|
-      render_forbidden exception.message
+      render_forbidden exception.message, nil
     end
 
     rescue_from ExceptionHandler::InvalidCredentials, ExceptionHandler::SubscriptionError do |exception|
-      render_bad_request exception.message, ""
+      render_bad_request exception.message, nil
     end
 
-    rescue_from ExceptionHandler::InvalidUsername, ExceptionHandler::InvalidEmail do |exception|
+    rescue_from ExceptionHandler::InvalidUsername, ExceptionHandler::InvalidTIN, ExceptionHandler::InvalidEmail do |exception|
       render_not_found exception.message, nil
     end
 
-    rescue_from ActiveRecord::RecordNotFound do
-      render_not_found "Record not found", nil
+    rescue_from ActiveRecord::RecordNotFound do |exception|
+      render_not_found exception.message, nil
     end
 
     rescue_from ActiveRecord::RecordNotSaved, ActiveRecord::RecordInvalid, ActiveRecord::RecordNotDestroyed do |exception|
