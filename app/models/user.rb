@@ -38,10 +38,6 @@ class User < ApplicationRecord
     save!(validate: false)
   end
 
-  def is_admin?
-    role == VALID_ROLES.last
-  end
-
   private
 
   def generate_token

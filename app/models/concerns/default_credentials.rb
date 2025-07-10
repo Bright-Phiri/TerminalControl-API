@@ -17,4 +17,8 @@ module DefaultCredentials
   def send_default_password_email
     UserMailer.send_default_password(self, @default_password).deliver_later
   end
+
+  def is_admin?
+    role == VALID_ROLES.last
+  end
 end
