@@ -41,8 +41,6 @@
 # pidfile ENV["PIDFILE"] if ENV["PIDFILE"]
 
 
-# Puma configuration file
-
 max_threads_count = ENV.fetch("RAILS_MAX_THREADS", 3)
 min_threads_count = ENV.fetch("RAILS_MIN_THREADS") { max_threads_count }
 threads min_threads_count, max_threads_count
@@ -51,16 +49,11 @@ port ENV.fetch("PORT") { 3000 }
 
 environment ENV.fetch("RAILS_ENV") { "development" }
 
-# Don't daemonize in production (important for Render)
-daemonize false
-
-# Enable cluster mode if WEB_CONCURRENCY is set
 workers ENV.fetch("WEB_CONCURRENCY", 2)
 
 preload_app!
 
 plugin :solid_queue
-
 plugin :tmp_restart
 
 pidfile ENV["PIDFILE"] if ENV["PIDFILE"]
