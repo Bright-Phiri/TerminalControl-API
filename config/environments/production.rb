@@ -15,6 +15,11 @@ Rails.application.configure do
   # Cache assets for far-future expiry since they are all digest stamped.
   config.public_file_server.headers = { "cache-control" => "public, max-age=#{1.year.to_i}" }
 
+  config.action_cable.url = Rails.application.credentials.dig(:action_cable, :url)
+  config.action_cable.allowed_request_origins = [ /https?:\/\/.*/ ]
+  config.action_cable.disable_request_forgery_protection = true
+
+
   # Enable serving of images, stylesheets, and JavaScripts from an asset server.
   # config.asset_host = "http://assets.example.com"
 
