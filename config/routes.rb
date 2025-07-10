@@ -7,8 +7,10 @@ Rails.application.routes.draw do
   namespace :api do
     namespace :v1 do
       resources :subscriptions, except: :create do
-        post "renew", on: :member
-        get "show_payments", on: :member
+        member do
+          post :renew
+          get :show_payments
+        end
       end
       resources :taxpayers, except: [ :create, :update ] do
         member do
