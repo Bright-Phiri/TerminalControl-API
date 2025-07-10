@@ -20,4 +20,3 @@ production:
     queue: subscription_reminders
     schedule: "every day at 3:00am"
 
-
