@@ -45,11 +45,15 @@ max_threads_count = ENV.fetch("RAILS_MAX_THREADS", 3)
 min_threads_count = ENV.fetch("RAILS_MIN_THREADS") { max_threads_count }
 threads min_threads_count, max_threads_count
 
-port ENV.fetch("PORT") { 3000 }
+port ENV.fetch("PORT", 3000)
 
-environment ENV.fetch("RAILS_ENV") { "development" }
+env = ENV.fetch("RAILS_ENV", "development")
+environment env
 
-workers ENV.fetch("WEB_CONCURRENCY", 2)
+# Only set workers if not in development
+unless env == "development"
+  workers ENV.fetch("WEB_CONCURRENCY", 2)
+end
 
 preload_app!
 
