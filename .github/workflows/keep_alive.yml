@@ -2,8 +2,8 @@ name: Keep Render App Awake
 
 on:
   schedule:
-    - cron: '*/2 * * * *'  # every 2 minutes
-  workflow_dispatch:        # allow manual triggering
+    - cron: '*/15 * * * *'  # every 15 minutes
+  workflow_dispatch:
 
 jobs:
   ping:
@@ -12,3 +12,4 @@ jobs:
     steps:
       - name: Ping Render app to keep it awake
         run: curl -s ${{ secrets.RENDER_HEALTHCHECK_URL }} > /dev/null
+
