@@ -1,8 +1,8 @@
-name: Keep Render API Awake
+name: Keep Render App Awake
 
 on:
   schedule:
-    - cron: '*/2 * * * *'
+    - cron: '*/2 * * * *'  # every 2 minutes
   workflow_dispatch:
 
 jobs:
@@ -10,5 +10,6 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Ping API Endpoint to Trigger Job
-        run: curl -s ${{ secrets.RENDER_API_URL }}/internal/ping_dashboard > /dev/null
+      - name: Ping Render app to keep it awake
+        run: curl -s ${{ secrets.RENDER_HEALTHCHECK_URL }} > /dev/null
+
