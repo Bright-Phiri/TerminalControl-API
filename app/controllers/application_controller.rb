@@ -4,6 +4,11 @@ class ApplicationController < ActionController::API
   include ExceptionHandler
   before_action :authorize_request
 
+  def decode_action_cable_token(auth_header)
+    token = auth_header.split(' ')[1]
+    decode_token(token)
+  end
+
   private
 
   def encode_token(payload)
