@@ -18,3 +18,4 @@ test:
 production:
   <<: *default
   database: <%= Rails.application.credentials.dig(:db, :name) %>
+  prepared_statements: false
