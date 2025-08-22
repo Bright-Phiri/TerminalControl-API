@@ -1,20 +1,20 @@
 default: &default
   adapter: postgresql
   encoding: unicode
-  host: localhost
-  username: postgres
-  password: root
+  host: <%= Rails.application.credentials.dig(:db, :host) %>
+  port: 5432
+  username: <%= Rails.application.credentials.dig(:db, :username) %>
+  password: <%= Rails.application.credentials.dig(:db, :password) %>
   pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
 
 development:
   <<: *default
-  database: terminal_control_api_development
+  database: <%= Rails.application.credentials.dig(:db, :name) %>
 
 test:
   <<: *default
-  database: terminal_control_api_test
+  database: <%= Rails.application.credentials.dig(:db, :name) %>
 
 production:
   <<: *default
   url: <%= ENV["DATABASE_URL"] %>
-

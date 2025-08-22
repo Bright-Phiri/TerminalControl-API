@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 class Api::V1::ActivityLogsController < ApplicationController
+  skip_before_action :authorize_request
 
   def index
     logs = params[:search].present? ? Log.search(params[:search]) : Log.all
