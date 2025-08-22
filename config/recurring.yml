@@ -2,21 +2,21 @@ development:
   block_unpaid_taxpayer_terminals:
     class: BlockTaxpayerTerminalsJob
     queue: terminal_blocking
-    schedule: "every day at 3:00am"
+    schedule: "every 10 minutes"
 
   subscription_expiry_check:
     class: SubscriptionExpiryJob
     queue: subscription_reminders
-    schedule: "every 20 seconds"
+    schedule: "every 10 minutes"
 
 production:
   block_unpaid_taxpayer_terminals:
     class: BlockTaxpayerTerminalsJob
     queue: terminal_blocking
-    schedule: "every 4 minutes"
+    schedule: "every 10 minutes"
 
   subscription_expiry_check:
     class: SubscriptionExpiryJob
     queue: subscription_reminders
-    schedule: "every 4 minutes"
+    schedule: "every 10 minutes"
 
