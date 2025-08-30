@@ -21,9 +21,4 @@ class Taxpayer < ApplicationRecord
     tsearch: { prefix: true }
     }
 
-  private
-
-  def update_live_dashboard
-    LiveDashboardUpdateJob.perform_later
-  end
 end

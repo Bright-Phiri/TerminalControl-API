@@ -2,6 +2,7 @@
 
 class Subscription < ApplicationRecord
   include CreatedAtFormatting
+  include LiveDashboardNotifiable
 
   enum :status, [ :active, :expired ], suffix: true, default: :active
 
@@ -9,8 +10,6 @@ class Subscription < ApplicationRecord
   has_many :payments, dependent: :destroy
 
   validates :start_date, presence: true
-
-  after_commit { LiveDashboardUpdateJob.perform_later }
 
   default_scope { order(:created_at).reverse_order }
   scope :active, -> { where(status: :active) }
