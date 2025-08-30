@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class Api::V1::PaymentsController < ApplicationController
-  before_action :set_payment, only: :show
+  load_and_authorize_resource only: :show
 
   def index
     payments = Payment.search(params[:search])
@@ -14,10 +14,6 @@ class Api::V1::PaymentsController < ApplicationController
   end
 
   private
-
-  def set_payment
-    @payment = Payment.find(params[:id])
-  end
 
   def payment_params
     params.expect(payment: [ :payment_date, :amount, :payment_method ])

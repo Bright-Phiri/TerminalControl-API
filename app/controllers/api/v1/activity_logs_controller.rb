@@ -2,6 +2,7 @@
 
 class Api::V1::ActivityLogsController < ApplicationController
   skip_before_action :authorize_request
+  load_and_authorize_resource class: 'Log', only: :index
 
   def index
     logs = params[:search].present? ? Log.search(params[:search]) : Log.all

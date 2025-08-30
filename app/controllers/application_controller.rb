@@ -2,6 +2,8 @@
 
 class ApplicationController < ActionController::API
   include ExceptionHandler
+  include CanCan::ControllerAdditions
+  include PermissionsHelper
   before_action :authorize_request
 
   def decode_action_cable_token(auth_header)
@@ -16,10 +18,10 @@ class ApplicationController < ActionController::API
   end
 
   def logged_in?
-    logged_in_user.present?
+    current_user.present?
   end
 
-  def logged_in_user
+  def current_user
     return unless decoded_token
 
     user_id = decoded_token[0]["user_id"]

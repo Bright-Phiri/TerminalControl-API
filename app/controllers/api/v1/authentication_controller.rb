@@ -22,7 +22,17 @@ class Api::V1::AuthenticationController < ApplicationController
 
     if user.active_status?
       token = encode_token({ user_id: user.id, exp: TOKEN_EXPIRY_DURATION.from_now.to_i })
-      render_ok({ user:, token: token, role: user.role }, "Access granted")
+      
+      permitted_actions = {
+        taxpayers: permissions_for(Taxpayer, user),
+        subscriptions: permissions_for(Subscription, user),
+        payments: permissions_for(Payment, user),
+        terminals: permissions_for(Terminal, user),
+        logs: permissions_for(Log, user),
+        users: permissions_for(User, user)
+      }
+
+      render_ok({ user:, token: token, role: user.role, permissions: permitted_actions }, "Access granted")
     else
       render_locked "User account disabled", nil
     end

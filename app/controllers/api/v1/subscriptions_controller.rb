@@ -1,10 +1,10 @@
 # frozen_string_literal: true
 
 class Api::V1::SubscriptionsController < ApplicationController
-  before_action :set_subscription, only: %i[show renew show_payments destroy]
+  load_and_authorize_resource only: %i[show renew show_payments destroy]
 
   def index
-    subscriptions =Subscription.search(params[:search])
+    subscriptions = Subscription.search(params[:search])
     subscriptions = subscriptions.paginate(page: params[:page] || 1, per_page: params[:per_page] || 10)
     render_ok ({ subscriptions: SubscriptionsRepresenter.new(subscriptions).as_json, total: subscriptions.total_entries })
   end
@@ -62,10 +62,6 @@ class Api::V1::SubscriptionsController < ApplicationController
   end
 
   private
-
-  def set_subscription
-    @subscription = Subscription.find(params[:id])
-  end
 
   def subscription_params
     subscription = params.require(:subscription).permit(:days)

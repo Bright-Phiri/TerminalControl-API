@@ -51,6 +51,10 @@ module ExceptionHandler
       render_forbidden exception.message, nil
     end
 
+    rescue_from CanCan::AccessDenied do |exception|
+      render_forbidden "Access Denied: #{exception.message}", nil
+    end
+
     rescue_from ExceptionHandler::InvalidCredentials, ExceptionHandler::SubscriptionError do |exception|
       render_bad_request exception.message, nil
     end

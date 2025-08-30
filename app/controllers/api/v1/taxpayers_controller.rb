@@ -3,7 +3,7 @@
 class Api::V1::TaxpayersController < ApplicationController
   skip_before_action :authorize_request, only: [ :subscribe_taxpayer, :login ]
   before_action :authenticate!, only: :subscribe_taxpayer
-  before_action :set_taxpayer, only: :show
+  before_action :set_taxpayer, only: [ :show, :show_terminals, :show_payments, :show_subscription  ]
 
   def index
     taxpayers = params[:search].present? ? Taxpayer.search(params[:search]) : Taxpayer.all
@@ -33,8 +33,7 @@ class Api::V1::TaxpayersController < ApplicationController
   end
 
   def show_terminals
-    taxpayer = Taxpayer.find(params[:id])
-    terminals = taxpayer.terminals
+    terminals = @taxpayer.terminals
 
     terminals = terminals.search(params[:search]) if params[:search].present?
     terminals = terminals.paginate(page: params[:page] || 1, per_page: params[:per_page] || 10)
@@ -43,10 +42,8 @@ class Api::V1::TaxpayersController < ApplicationController
   end
 
   def show_payments
-    taxpayer = Taxpayer.find(params[:id])
-
-    if taxpayer.subscription.present?
-      payments = taxpayer.subscription.payments.order(:created_at).reverse_order.paginate(page: params[:page] || 1, per_page: params[:per_page] || 10)
+    if @taxpayer.subscription.present?
+      payments = @taxpayer.subscription.payments.order(:created_at).reverse_order.paginate(page: params[:page] || 1, per_page: params[:per_page] || 10)
 
       render_ok({ payments: PaymentsRepresenter.new(payments).as_json, total: payments.total_entries })
     else
@@ -66,8 +63,7 @@ class Api::V1::TaxpayersController < ApplicationController
   end
 
   def show_subscription
-    taxpayer = Taxpayer.find(params[:id])
-    subscription = taxpayer.subscription
+    subscription = @taxpayer.subscription
     if subscription.nil?
       render_not_found "Subscription not found for taxpayer", nil
     else

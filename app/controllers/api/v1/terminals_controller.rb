@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class Api::V1::TerminalsController < ApplicationController
-  before_action :set_terminal, only: :show
+  load_and_authorize_resource only: :show
   skip_before_action :authorize_request, only: :check_terminal_status
   before_action :authenticate!, only: :check_terminal_status
 
@@ -22,10 +22,6 @@ class Api::V1::TerminalsController < ApplicationController
   end
 
   private
-
-  def set_terminal
-    @terminal = Terminal.find(params[:id])
-  end
 
   def terminal_params
     params.expect([ :terminal_id ])
