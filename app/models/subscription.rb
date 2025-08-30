@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class Subscription < ApplicationRecord
-  include CreatedAtFormatting
+  include TimestampFormatting
   include LiveDashboardNotifiable
 
   enum :status, [ :active, :expired ], suffix: true, default: :active

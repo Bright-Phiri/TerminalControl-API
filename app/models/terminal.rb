@@ -2,7 +2,7 @@
 
 class Terminal < ApplicationRecord
   include PgSearch::Model
-  include CreatedAtFormatting
+  include TimestampFormatting
   include LiveDashboardNotifiable
 
   enum :status, [ :active, :blocked ], suffix: true, default: :active
