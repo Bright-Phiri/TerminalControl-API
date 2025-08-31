@@ -9,4 +9,3 @@ module TimestampFormatting
     end
   end
 end
-
