@@ -17,7 +17,12 @@ module AbilityPermissions
         actions << :read
       end
 
-      actions.map(&:to_s) 
+      if resource_class == User && !user.is_admin?
+        actions = actions - %i[index show read create destroy] 
+        actions << :update if ability.can?(:update, resource_class.new(id: user.id))
+      end
+
+      actions.map(&:to_s)
     end
   end
 end
