@@ -3,7 +3,7 @@
 class ApplicationController < ActionController::API
   include ExceptionHandler
   include CanCan::ControllerAdditions
-  include PermissionsHelper
+  include AbilityPermissions
   before_action :authorize_request
 
   def decode_action_cable_token(auth_header)

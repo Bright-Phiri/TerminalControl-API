@@ -32,7 +32,7 @@ class Api::V1::AuthenticationController < ApplicationController
         users: permissions_for(User, user)
       }
 
-      render_ok({ user:, token: token, role: user.role, permissions: permitted_actions }, "Access granted")
+      render_ok({ user: UserRepresenter.new(user).as_json, token: token, permissions: permitted_actions }, "Access granted")
     else
       render_locked "User account disabled", nil
     end

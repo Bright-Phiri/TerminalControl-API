@@ -13,7 +13,9 @@ class Ability
       can :manage, Payment
       can :read, Taxpayer
       can :read, Terminal
-      cannot :read, User
+
+      can [:read, :update], User, id: user.id 
+
       cannot :read, Log
     end
   end

@@ -1,23 +1,23 @@
 # frozen_string_literal: true
 
 class Api::V1::UsersController < ApplicationController
-  load_and_authorize_resource only: %i[index show update disable activate destroy]
+  load_and_authorize_resource only: %i[index show create update disable activate destroy]
   skip_before_action :authorize_request, only: :register
   wrap_parameters false
 
   def index
     users = User.where.not(role: VALID_ROLES.last)
-    render_ok users
+    render_ok UsersRepresenter.new(users).as_json
   end
 
   def show
-    render_ok @user
+    render_ok UserRepresenter.new(@user).as_json
   end
 
   def create
     user = User.new(user_params)
     if user.save
-      render_created user, "User successfully created. A default password has been sent to the user's email"
+      render_created UserRepresenter.new(user).as_json, "User successfully created. A default password has been sent to the user's email"
     else
       render_unprocessable_entity "Failed to create user", user.errors.full_messages
     end
@@ -28,7 +28,7 @@ class Api::V1::UsersController < ApplicationController
 
     user = User.new(user_params.merge(role: VALID_ROLES[1]))
     if user.save
-      render_created user, "Account successfully created"
+      render_created UserRepresenter.new(user).as_json, "Account successfully created"
     else
       render_unprocessable_entity "Failed to register user", user.errors.full_messages
     end
@@ -36,7 +36,7 @@ class Api::V1::UsersController < ApplicationController
 
   def update
     if @user.update(user_params)
-      render_ok @user, "User successfully updated"
+      render_ok UserRepresenter.new(@user).as_json, "User successfully updated"
     else
       render_unprocessable_entity "Failed to update user", @user.errors.full_messages
     end
