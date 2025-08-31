@@ -2,7 +2,6 @@
 
 class Terminal < ApplicationRecord
   include PgSearch::Model
-  include TimestampFormatting
   include LiveDashboardNotifiable
 
   enum :status, [ :active, :blocked ], suffix: true, default: :active
@@ -21,4 +20,9 @@ class Terminal < ApplicationRecord
     using: {
       tsearch: { prefix: true }
     }
+
+    def formatted_activation_date
+      return unless activation_date
+      Time.zone.parse(activation_date).strftime("%B %d, %Y")
+    end
 end

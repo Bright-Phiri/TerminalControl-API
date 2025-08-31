@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 class Payment < ApplicationRecord
-  include TimestampFormatting
   belongs_to :subscription
 
   validates :payment_method, :amount, presence: true

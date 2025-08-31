@@ -2,7 +2,6 @@
 
 class Log < ApplicationRecord
   include PgSearch::Model
-  include TimestampFormatting
 
   belongs_to :user
 
