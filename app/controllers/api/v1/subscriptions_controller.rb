@@ -73,7 +73,7 @@ class Api::V1::SubscriptionsController < ApplicationController
     actions = SUBSCRIPTION_ACTIONS[action] || { subscription: "Unknown", payment: "Unknown" }
 
     Log.create!(
-      user_id: logged_in_user.id,
+      user_id: current_user.id,
       action: action,
       resource_type: subscription.class.name,
       resource_id: subscription.id,
@@ -81,7 +81,7 @@ class Api::V1::SubscriptionsController < ApplicationController
     )
 
     Log.create!(
-      user_id: logged_in_user.id,
+      user_id: current_user.id,
       action: action,
       resource_type: payment.class.name,
       resource_id: payment.id,

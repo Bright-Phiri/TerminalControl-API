@@ -2,8 +2,10 @@
 
 class ApplicationController < ActionController::API
   include ExceptionHandler
+  include JsonWebToken
   include CanCan::ControllerAdditions
   include AbilityPermissions
+
   before_action :authorize_request
 
   def decode_action_cable_token(auth_header)
@@ -12,10 +14,6 @@ class ApplicationController < ActionController::API
   end
 
   private
-
-  def encode_token(payload)
-    JWT.encode(payload, hmac_secret)
-  end
 
   def logged_in?
     current_user.present?
@@ -29,10 +27,10 @@ class ApplicationController < ActionController::API
   end
 
   def authorize_request
-    if auth_header.blank?
+    if request.authorization.blank?
       render_unauthorized "Token missing"
     else
-      render_unauthorized "Invalid token format" and return unless auth_header.starts_with?("Bearer ")
+      render_unauthorized "Invalid token format" and return unless request.authorization.starts_with?("Bearer ")
       render_unauthorized "Unauthorized: Invalid or expired token" unless logged_in?
     end
   end
@@ -52,23 +50,9 @@ class ApplicationController < ActionController::API
     api_key == Rails.application.credentials.api_key
   end
 
-  def auth_header
-    request.authorization
-  end
-
-  def decode_token(token)
-    JWT.decode(token, hmac_secret, true, { algorithm: "HS256" })
-  rescue JWT::DecodeError
-    nil
-  end
-
   def decoded_token
-    token = auth_header.split(" ")[1]
+    token = request.authorization.split(" ")[1]
     decode_token(token)
-  end
-
-  def hmac_secret
-    Rails.application.credentials.secret_key_base
   end
 
   def render_unauthorized(message)
