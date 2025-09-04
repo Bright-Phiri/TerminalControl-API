@@ -12,6 +12,7 @@ class SubscriptionRepresenter
       taxpayer: subscription.taxpayer.name,
       start_date: subscription.start_date.strftime("%B %d, %Y"),
       end_date: subscription.end_date.strftime("%B %d, %Y"),
+      duration: subscription.duration_in_words,
       status: subscription.status,
       payments: PaymentsRepresenter.new(subscription.payments).as_json
     }

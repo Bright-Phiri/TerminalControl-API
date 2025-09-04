@@ -2,6 +2,7 @@
 
 class Subscription < ApplicationRecord
   include LiveDashboardNotifiable
+  include DurationInWords
 
   enum :status, [ :active, :expired ], suffix: true, default: :active
 
