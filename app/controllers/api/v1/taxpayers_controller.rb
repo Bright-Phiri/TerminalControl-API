@@ -3,7 +3,7 @@
 class Api::V1::TaxpayersController < ApplicationController
   skip_before_action :authorize_request, only: [ :subscribe_taxpayer, :login ]
   before_action :authenticate!, only: :subscribe_taxpayer
-  before_action :set_taxpayer, only: [ :show, :show_terminals, :show_payments, :show_subscription  ]
+  before_action :set_taxpayer, only: [ :show, :show_terminals, :block_terminals, :unblock_terminals, :show_payments, :show_subscription  ]
 
   def index
     taxpayers = params[:search].present? ? Taxpayer.search(params[:search]) : Taxpayer.all
@@ -39,6 +39,16 @@ class Api::V1::TaxpayersController < ApplicationController
     terminals = terminals.paginate(page: params[:page] || 1, per_page: params[:per_page] || 10)
 
     render_ok ({ terminals: TerminalsRepresenter.new(terminals).as_json, total: terminals.total_entries })
+  end
+
+  def block_terminals
+    @taxpayer.terminals.update_all(status: :blocked)
+    render_ok ({ message: "All terminals for taxpayer #{@taxpayer.tin} have been blocked." })
+  end
+
+  def unblock_terminals
+    @taxpayer.terminals.update_all(status: :active)
+    render_ok ({ message: "All terminals for taxpayer #{@taxpayer.tin} have been unblocked." })
   end
 
   def show_payments

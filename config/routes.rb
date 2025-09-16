@@ -16,6 +16,8 @@ Rails.application.routes.draw do
         member do
           get "show_payments"
           get "show_terminals"
+          post "block_terminals"
+          post "unblock_terminals"
           get "show_subscription"
         end
         collection do
