@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 class Payment < ApplicationRecord
+  include LiveDashboardNotifiable
+  include DurationInWords
   belongs_to :subscription
 
   validates :payment_method, :amount, presence: true
