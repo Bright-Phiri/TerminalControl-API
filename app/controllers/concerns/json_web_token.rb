@@ -1,14 +1,29 @@
 # frozen_string_literal: true
 
 module JsonWebToken
-  SECRET_KEY = Rails.application.credentials.secret_key_base
+  SECRET_KEY = Rails.application.credentials.dig(:jwt, :secret_key)
+  ISSUER     = Rails.application.credentials.dig(:jwt, :issuer)
+  AUDIENCE   = Rails.application.credentials.dig(:jwt, :audience)
 
-  def encode_token(payload)
-    JWT.encode(payload, SECRET_KEY)
+  module_function
+
+  def encode_token(payload, exp: TOKEN_EXPIRY_DURATION.from_now.to_i)
+    payload[:iss] = ISSUER
+    payload[:aud] = AUDIENCE
+    payload[:exp] = exp.to_i
+    JWT.encode(payload, SECRET_KEY, "HS256")
   end
 
   def decode_token(token)
-    JWT.decode(token, SECRET_KEY, true, { algorithm: "HS256" })
+    options = {
+      algorithm: "HS256",
+      verify_iss: true,
+      iss: ISSUER,
+      verify_aud: true,
+      aud: AUDIENCE,
+      verify_expiration: true
+    }
+    JWT.decode(token, SECRET_KEY, true, options)
   rescue JWT::DecodeError
     nil
   end
