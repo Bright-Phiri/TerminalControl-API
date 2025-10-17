@@ -17,6 +17,11 @@ module TerminalControlApi
     config.autoload_lib(ignore: %w[assets tasks])
     config.time_zone = "Africa/Maputo"
     config.active_record.default_timezone = :local
+    config.mission_control.jobs.http_basic_auth_enabled = false
+  
+    # Use Propshaft for assets
+    config.assets.enabled = true
+    config.assets.compile = true
 
     # Configuration for the application, engines, and railties goes here.
     #

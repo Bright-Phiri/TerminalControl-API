@@ -3,6 +3,7 @@
 Rails.application.routes.draw do
   get "up" => "rails/health#show", as: :rails_health_check
   mount ActionCable.server => "/websocket"
+  mount MissionControl::Jobs::Engine, at: "/jobs"
 
   namespace :api do
     namespace :v1 do
