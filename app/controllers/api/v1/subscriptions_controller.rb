@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 class Api::V1::SubscriptionsController < ApplicationController
+  include ActionView::Helpers::NumberHelper
   load_and_authorize_resource only: %i[show renew show_payments destroy]
 
   def index
@@ -25,7 +26,7 @@ class Api::V1::SubscriptionsController < ApplicationController
     subscription, payment = service.create_subscription
 
     if subscription.persisted? && payment.persisted?
-      log_subscription_action(subscription, payment, "create")
+      log_subscription_action(subscription, payment, "created")
       render_created(SubscriptionRepresenter.new(subscription).as_json, "Subscription and payment successfully created")
     else
       errors = subscription.errors.full_messages + payment.errors.full_messages
@@ -77,15 +78,18 @@ class Api::V1::SubscriptionsController < ApplicationController
       action: action,
       resource_type: subscription.class.name,
       resource_id: subscription.id,
-      description: "#{actions[:subscription]} a subscription for taxpayer #{subscription.taxpayer.tin} from #{subscription.start_date} to #{subscription.end_date}."
+      description: "#{actions[:subscription]} a subscription for taxpayer #{subscription.taxpayer.tin} from #{subscription.start_date} to #{subscription.end_date}"
     )
+
+    amount_value = (payment.amount % 1).zero? ? payment.amount.to_i : ('%.2f' % payment.amount)
+    formatted_amount = number_with_delimiter(amount_value, delimiter: ',')
 
     Log.create!(
       user_id: current_user.id,
       action: action,
       resource_type: payment.class.name,
       resource_id: payment.id,
-      description: "#{actions[:payment]} a payment of MK #{payment.amount}."
+      description: "#{actions[:payment]} a payment of MK #{formatted_amount}"
     )
   end
 end
