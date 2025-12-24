@@ -57,7 +57,7 @@ end
 
 preload_app!
 
-# plugin :solid_queue
+plugin :solid_queue
 plugin :tmp_restart
 
 pidfile ENV["PIDFILE"] if ENV["PIDFILE"]
