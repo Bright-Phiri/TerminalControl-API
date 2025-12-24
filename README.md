@@ -12,4 +12,7 @@ Key Features:
 
 ## Client Frontend Preview
 
-<img width="3200" height="1896" alt="Image" src="https://github.com/user-attachments/assets/e8f1c9ab-2a10-4d79-9272-c926728e6050" />
+
+
+https://github.com/user-attachments/assets/cf55b82d-654f-4b17-98c9-a6c6cf1e98ba
+
