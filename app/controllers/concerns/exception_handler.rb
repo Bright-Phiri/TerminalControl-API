@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 module ExceptionHandler
+  include ResponseRendering
   extend ActiveSupport::Concern
 
   class NotAuthorized < StandardError; end
@@ -64,7 +65,8 @@ module ExceptionHandler
     end
 
     rescue_from ActiveRecord::RecordNotFound do |exception|
-      render_not_found exception.message, nil
+      model_name = exception.model || "Record"
+      render_not_found("#{model_name} not found", nil)
     end
 
     rescue_from ActiveRecord::RecordNotSaved, ActiveRecord::RecordInvalid, ActiveRecord::RecordNotDestroyed do |exception|

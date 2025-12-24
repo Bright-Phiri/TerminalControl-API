@@ -4,7 +4,6 @@ class ApplicationController < ActionController::API
   include ExceptionHandler
   include JsonWebToken
   include AbilityPermissions
-  include ResponseRendering
 
   include CanCan::ControllerAdditions
 
